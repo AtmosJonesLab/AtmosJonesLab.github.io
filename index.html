@@ -5,128 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Atmos Jones Lab</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #0f172a;
-      --accent: #38bdf8;
-      --background: #f8fafc;
-      --surface: #ffffff;
-      --text: #1e293b;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--background);
-      color: var(--text);
-    }
-
-    header {
-      background-color: var(--primary);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 2rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      font-size: 1.75rem;
-    }
-
-    nav a {
-      color: #cbd5e1;
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-    }
-
-    .hero {
-      background: linear-gradient(to right, #0f172a, #334155);
-      color: white;
-      padding: 6rem 2rem;
-      text-align: center;
-    }
-
-    .hero h2 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.25rem;
-      max-width: 700px;
-      margin: auto;
-      opacity: 0.9;
-    }
-
-    section {
-      padding: 4rem 2rem;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .section-title {
-      font-size: 2.25rem;
-      margin-bottom: 2rem;
-      color: var(--primary);
-      border-bottom: 3px solid var(--accent);
-      padding-bottom: 0.5rem;
-    }
-
-    .card {
-      background-color: var(--surface);
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card h4 {
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-      font-size: 1.25rem;
-    }
-
-    .card a {
-      color: var(--accent);
-      font-weight: 600;
-      display: inline-block;
-      margin-top: 0.5rem;
-    }
-
-    footer {
-      text-align: center;
-      background-color: var(--primary);
-      color: #94a3b8;
-      padding: 1.5rem 0;
-      font-size: 0.9rem;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  
 </head>
 
 <body>
     <header>
       <h1>Atmos Jones Lab</h1>
       <nav>
-        <a href="#projects">Projects</a>
-        <a href="#team">Team</a>
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="team.html">Team</a>
       </nav>
     </header>
   
@@ -145,7 +34,9 @@
     <div class="card">
       <h4>Urban Tree Ecophysiology Network</h4>
       <p>The Urban Trees Ecophysiology Network (UTEN) is a network of researchers aiming to understand the urban trees response to climate change.</p>
-   `   <a href="treeData.html" target="_blank"> View Live Data →</a>
+      <nav>
+        <a href="treeData.html">View Live Data →</a>
+      </nav>
     </div>
 
     <div class="card">
