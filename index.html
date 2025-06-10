@@ -23,7 +23,7 @@
   <script>
     const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA'; // Replace with your actual API key
     const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ'; // Replace with your spreadsheet ID
-    const RANGE = 'Sheet1!A2:C'; // Adjust range as needed
+    const RANGE = 'unsorteddata!A2:C'; // Adjust range as needed
 
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
@@ -31,6 +31,7 @@
       .then(response => response.json())
       .then(data => {
         const rows = data.values;
+        console.log('Fetched rows:', rows);
 
         // Step 1: Group by timestamp
         const groupedData = {};
