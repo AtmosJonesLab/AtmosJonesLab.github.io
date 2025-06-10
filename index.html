@@ -1,7 +1,48 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Google Sheets API Demo</title>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <h2>People List</h2>
+  <table border="1" id="sheet-data">
+    <thead>
+      <tr><th>Name</th><th>Age</th><th>City</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const API_KEY = 'AIzaSyDW_7GZ4trK1A6hr7gyaFf9bMD0KDJGxm8'; // Replace with your actual API key
+    const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ'; // Replace with your spreadsheet ID
+    const RANGE = 'Sheet1!A2:C'; // Adjust range as needed
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector('#sheet-data tbody');
+        const rows = data.values;
+
+        if (!rows) {
+          tableBody.innerHTML = '<tr><td colspan="3">No data found.</td></tr>';
+          return;
+        }
+
+        rows.forEach(row => {
+          const tr = document.createElement('tr');
+          row.forEach(cell => {
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading Google Sheet data:', err);
+      });
+  </script>
 </body>
 </html>
