@@ -24,23 +24,28 @@
     <h2>Urban Tree Ecophysiology Network</h2>
     <p>
      Data from a sugar maple located on Georgetown's campus in Washington, D.C. This tree is part of the Urban Trees Ecophysiology Network (UTEN), a network of researchers aiming to understand the urban trees response to climate change.
-     The data is collected using a variety of sensors, including two types of dendrometers, and humidity and temperature sensors.
+     The data is collected using a variety of sensors.
     </p>
 
   </section>
+  <h2>Graphs</h2>
 
-      <canvas id='temperatureChart' width="300" height="150"></canvas>
-    
-      <canvas id='humidityChart' width="300" height="150"></canvas>
-    
-      <canvas id='pdendrochart' width="300" height="150"></canvas>
-
-      <canvas id='LDchart' width="300" height="150"></canvas>
-
-      <canvas id='batteryChart' width="300" height="150"></canvas>
+  <div class="graph-grid">
+    <canvas id='temperatureChart' ></canvas>
+    <canvas id='humidityChart' ></canvas>
+  </div>
+  <div class="graph-grid">
+    <canvas id='pdendrochart' ></canvas>
+    <canvas id='LDchart'></canvas>
+  </div>
+  <div class="graph-grid">
+    <canvas id='batteryChart' ></canvas>
+    <canvas id="batteryPercent"></canvas>
+  </div>
+     
   
  
-    <h2>Sensor Readings</h2>
+    <h2>Raw Sensor Readings</h2>
     <table border="1" id="sensor-table">
       <thead>
         <tr>
@@ -57,17 +62,21 @@
     </table>
 
     
-     
-   
-   
-  <script>
-    // Fetch data from Google Sheets API
-    const apiKey = process.env.API_KEY;
-    const sheetId = process.env.SHEET_ID;
-    const RANGE = 'alldata!A2:D'; // Adjust range as needed
+  
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${RANGE}?key=${apiKey}`;
+      <script>
     
+    // Fetch data from Google Sheets API
+//     API_KEY=AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
+//     SHEET_ID=1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+
+    const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA';
+    const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ';
+    const RANGE = 'alldata!A2:D';
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+   
 
     fetch(url)
       .then(response => response.json())
@@ -124,54 +133,130 @@
     return points.sort((a, b) => a.x - b.x); // sort by time
   };
 
+  
 
-  const drawChart = (canvasId, label, data, color) => {
-    new Chart(document.getElementById(canvasId), {
-      type: 'line',
-      data: {
-        datasets: [{
-          label,
-          data,
-          borderColor: color,
-          fill: false,
-          tension: 0.3,
-          pointRadius: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            type: 'time', // Use the time scale
-            time: {
-              unit: 'minute', // Adjust the unit (e.g., 'minute', 'hour', 'day') based on your data
-              displayFormats: {
-                day: 'MMM DD, YYYY HH:mm', // Format for x-axis labels
-              }
+
+  const drawChart = (canvasId, label, data, color, useGradient = false) => {
+          const canvas = document.getElementById(canvasId);
+          const ctx = canvas.getContext('2d');
+
+          let strokeStyle = color;
+
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ef4444'); // red
+            gradient.addColorStop(1, '#3b82f6'); // blue
+            strokeStyle = gradient;
+          }
+
+          new Chart(canvas, {
+            type: 'line',
+            data: {
+              datasets: [{
+                label,
+                data,
+                borderColor: strokeStyle,
+                backgroundColor: strokeStyle,
+                fill: false,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: strokeStyle
+              }]
             },
-            title: {display: true, text: 'Time'}
-          },
-          y: {
-            beginAtZero: false,
-            title: { display: true, text: label }
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  type: 'time',
+                  time: {
+                    unit: 'day', // instead of 'minute'
+                    displayFormats: {
+                      day: 'MMM d, HH:mm' // or 'MMM d, yyyy' if you don’t want time
+                    }
+                  },
+                  ticks: {
+                    maxRotation: 0,
+                    autoSkip: true,
+                    font: { size: 12 }
+                  },
+                  title: {
+                    display: true,
+                    text: 'Time',
+                    font: { size: 16 }
+                  }
+                }
+                },
+                y: {
+                  beginAtZero: false,
+                  title: { display: true, text: label }
+                }
+              },
+              plugins: {
+                title: {
+                  display: true,
+                  text: label,
+                  font: {
+                    size: 30,
+                    weight: 'bold'
+                  },
+                  padding: { top: 10, bottom: 10 }
+                },
+                legend: {
+                  display: false // You can still use the title as the chart header
+                }
+              }
+          });
+        };
+
+        const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const percent = Math.min(latestVoltage / maxVoltage, 1);
+  const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Battery', 'Remaining'],
+      datasets: [{
+        data: [percent * 100, 100 - percent * 100],
+        backgroundColor: [color, '#e5e7eb'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: '70%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: context => `${context.label}: ${context.raw.toFixed(1)}%`
           }
         },
-        plugins: {
-          legend: { position: 'top' }
+        title: {
+          display: true,
+          text: `Battery: ${(latestVoltage).toFixed(2)}V`,
+          font: { size: 18 }
         }
       }
-    });
-  };
+    }
+  });
+};
+
+        // Draw battery chart
+        const latestBatteryVoltage = parseFloat(getDataByType("battery voltage").slice(-1)[0]?.y || 0);
+        drawBatteryChart('batteryPercent', latestBatteryVoltage);
+        
+  
 
   // Draw temperature and humidity charts
-  console.log(getDataByType("temperature")[0]);
-  console.log(getDataByType("humidity"));
 
-  drawChart('temperatureChart', "Temperature (ºC)", getDataByType("temperature"), "#f97316");
-  drawChart('humidityChart', "Humidity (%)", getDataByType("humidity"), "#0ea5e9");
-  drawChart('pdendrochart', "Point Dendro (um)", getDataByType("point dendrometer"), "#0ea5e9");
-  drawChart('LDchart', "LD", getDataByType("ld"), "#0ea5e9");
-  drawChart('batteryChart', "Battery Voltage", getDataByType("battery voltage"), "#0ea5e9");
+        drawChart('temperatureChart', "Temperature (ºC)", getDataByType("temperature"), "#f97316", true);
+        drawChart('humidityChart', "Humidity (%)", getDataByType("humidity"), "#0ea5e9", true);
+        drawChart('pdendrochart', "Point Dendrometer (µm)", getDataByType("point dendrometer"), "#a855f7");
+        drawChart('LDchart', "LD", getDataByType("ld"), "#facc15");
+        drawChart('batteryChart', "Battery Voltage", getDataByType("battery voltage"), "#22c55e");
   })
     .catch(error => {
       console.error('Error fetching data:', error);
