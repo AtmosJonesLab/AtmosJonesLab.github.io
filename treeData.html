@@ -62,11 +62,11 @@
    
   <script>
     // Fetch data from Google Sheets API
-    const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA'; // Replace with your actual API key
-    const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ'; // Replace with your spreadsheet ID
+    const apiKey = process.env.API_KEY;
+    const sheetId = process.env.SHEET_ID;
     const RANGE = 'alldata!A2:D'; // Adjust range as needed
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${RANGE}?key=${apiKey}`;
     // https://sheets.googleapis.com/v4/spreadsheets/1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ/values/unsorteddata!A2:C?key=AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
 
     fetch(url)
