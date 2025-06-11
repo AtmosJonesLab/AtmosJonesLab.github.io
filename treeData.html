@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   
   
 </head>
@@ -28,7 +29,15 @@
 
   </section>
 
- 
+      <canvas id='temperatureChart' width="300" height="150"></canvas>
+    
+      <canvas id='humidityChart' width="300" height="150"></canvas>
+    
+      <canvas id='pdendrochart' width="300" height="150"></canvas>
+
+      <canvas id='LDchart' width="300" height="150"></canvas>
+
+      <canvas id='batteryChart' width="300" height="150"></canvas>
   
  
     <h2>Sensor Readings</h2>
@@ -47,18 +56,15 @@
       <tbody></tbody>
     </table>
 
-    <div>
-      <canvas id='temperatureChart' width="600" height="300"></canvas>
-    </div>
-    <div> 
-      <canvas id='humidityChart' width="600" height="300"></canvas>
-    </div>
+    
+     
+   
    
   <script>
     // Fetch data from Google Sheets API
     const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA'; // Replace with your actual API key
     const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ'; // Replace with your spreadsheet ID
-    const RANGE = 'alldata!A2:C'; // Adjust range as needed
+    const RANGE = 'alldata!A2:D'; // Adjust range as needed
 
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
     // https://sheets.googleapis.com/v4/spreadsheets/1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ/values/unsorteddata!A2:C?key=AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
@@ -71,27 +77,27 @@
 
         // Step 1: Group by timestamp
         const groupedData = {};
-        rows.forEach(([type, timestamp, value]) => {
-          if (!groupedData[timestamp]) {
-            groupedData[timestamp] = {};
+        rows.forEach(([type, epochtime, timestamp, value]) => {
+          if (!groupedData[epochtime]) {
+            groupedData[epochtime] = {};
           }
-          groupedData[timestamp][type.toLowerCase()] = value;
+          groupedData[epochtime][type.toLowerCase()] = value;
         });
 
         // Step 2: Render HTML Table
         const tbody = document.querySelector('#sensor-table tbody');
-        for (const [timestamp, sensors] of Object.entries(groupedData)) {
+        for (const [epochtime, sensors] of Object.entries(groupedData)) {
           const tr = document.createElement('tr');
 
           const tdTime = document.createElement('td');
-          tdTime.textContent = timestamp;
+          tdTime.textContent = epochtime;
           tr.appendChild(tdTime);
 
           const columns = [
             'humidity',
             'temperature',
             'point dendrometer',
-            'LD',
+            'ld',
             'battery state',
             'battery voltage'
           ];
@@ -107,11 +113,11 @@
         
     const getDataByType = (type) => {
     const points = [];
-    for (const [timestamp, sensors] of Object.entries(groupedData)) {
+    for (const [epochtime, sensors] of Object.entries(groupedData)) {
       if (sensors[type]) {
         const y = parseFloat(sensors[type]);
         if (!isNaN(y)) {
-          points.push({ x: new Date(timestamp), y });
+          points.push({ x: new Date(epochtime*1000), y });
         }
       }
     }
@@ -138,10 +144,9 @@
           x: {
             type: 'time', // Use the time scale
             time: {
-              unit: 'day', // Adjust the unit (e.g., 'minute', 'hour', 'day') based on your data
-              tooltipFormat: 'MMM DD, YYYY HH:mm', // Format for tooltips
+              unit: 'minute', // Adjust the unit (e.g., 'minute', 'hour', 'day') based on your data
               displayFormats: {
-                day: 'MMM DD', // Format for x-axis labels
+                day: 'MMM DD, YYYY HH:mm', // Format for x-axis labels
               }
             },
             title: {display: true, text: 'Time'}
@@ -164,38 +169,13 @@
 
   drawChart('temperatureChart', "Temperature (ºC)", getDataByType("temperature"), "#f97316");
   drawChart('humidityChart', "Humidity (%)", getDataByType("humidity"), "#0ea5e9");
+  drawChart('pdendrochart', "Point Dendro (um)", getDataByType("point dendrometer"), "#0ea5e9");
+  drawChart('LDchart', "LD", getDataByType("ld"), "#0ea5e9");
+  drawChart('batteryChart', "Battery Voltage", getDataByType("battery voltage"), "#0ea5e9");
   })
     .catch(error => {
       console.error('Error fetching data:', error);
   
-  });
-</script>
-
-<div>
-  <canvas id="myChart"></canvas>
-</div>
-
-
-<script>
-  const ctx = document.getElementById('myChart');
-
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
   });
 </script>
 
