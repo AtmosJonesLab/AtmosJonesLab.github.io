@@ -20,25 +20,25 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Fetch data from Google Sheets
+      - name: Fetch Google Sheet and update data.json
         env:
           API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
           SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
         run: |
-          echo "Fetching Google Sheet data..."
+          echo "Fetching Google Sheet..."
           node <<EOF
           import fetch from 'node-fetch';
           import { writeFileSync } from 'fs';
 
-          const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${process.env.SHEET_ID}/values/data?key=\${process.env.API_KEY}\`;
+          const apiKey = process.env.API_KEY;
+          const sheetId = process.env.SHEET_ID;
+          const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/data?key=\${apiKey}\`;
 
           const run = async () => {
             const res = await fetch(url);
             const json = await res.json();
             writeFileSync('data.json', JSON.stringify(json, null, 2));
-            console.log("Saved data.json");
           };
-
           run();
           EOF
 
