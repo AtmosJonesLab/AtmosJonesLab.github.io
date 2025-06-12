@@ -38,17 +38,21 @@ jobs:
           const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/data?key=${apiKey}`;
 
           const run = async () => {
-            try {
-              const res = await fetch(url);
-              if (!res.ok) {
-                throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+          try {
+            const res = await fetch(url);
+            if (!res.ok) {
+              const errorDetails = await res.text();
+              throw new Error(`HTTP ${res.status}: ${errorDetails}`);
+            }
+            const json = await res.json();
+            fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
+            console.log('✅ Successfully updated data.json');
+          } catch (err) {
+            console.error(`❌ Failed to fetch data from ${url}:`, err.message);
+            if (err.response) {
+              console.error('Response details:', err.response.data);
               }
-              const json = await res.json();
-              fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
-              console.log('✅ Successfully updated data.json');
-            } catch (err) {
-              console.error('❌ Failed to fetch data:', err);
-              process.exit(1);
+            process.exit(1);
             }
           };
           run();
