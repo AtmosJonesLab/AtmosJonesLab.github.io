@@ -38,7 +38,7 @@ jobs:
           const RANGE = 'alldata!A2:D';
 
           const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-          
+
           const run = async () => {
           try {
             const res = await fetch(url);
@@ -74,4 +74,5 @@ jobs:
           git commit -m "Update data.json from Google Sheets" || echo "No changes to commit"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+  
