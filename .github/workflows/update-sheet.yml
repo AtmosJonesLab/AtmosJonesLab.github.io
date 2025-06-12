@@ -67,12 +67,13 @@ jobs:
           SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
           
       - name: Commit and push changes
+        env:
+          PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add data.json
           git commit -m "Update data.json from Google Sheets" || echo "No changes to commit"
+          git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}.git
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-  
+
