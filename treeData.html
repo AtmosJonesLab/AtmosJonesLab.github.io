@@ -31,18 +31,48 @@
   <h2>Graphs</h2>
 
   <div class="graph-grid">
-    <canvas id='temperatureChart' ></canvas>
-    <canvas id='humidityChart' ></canvas>
+    <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <canvas id="temperatureChart"></canvas>
+    </div>
+
+    <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <canvas id="humidityChart"></canvas>
+    </div>
   </div>
+
   <div class="graph-grid">
-    <canvas id='pdendrochart' ></canvas>
-    <canvas id='LDchart'></canvas>
+    <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <canvas id='pdendrochart' ></canvas>
+    </div>
+    <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <canvas id='LDchart'></canvas>
+    </div>
   </div>
+
   <div class="graph-grid">
     <canvas id='batteryChart' ></canvas>
     <canvas id="batteryPercent"></canvas>
   </div>
      
+
+  <script>
+    function toggleExpand(wrapper) {
+      // Close any other expanded chart
+      document.querySelectorAll('.chart-wrapper.expanded').forEach(el => {
+        if (el !== wrapper) el.classList.remove('expanded');
+      });
+      // Toggle this one
+      wrapper.classList.toggle('expanded');
+    }
+  
+    // Optional: click outside to close
+    document.addEventListener('click', function(e) {
+      const expanded = document.querySelector('.chart-wrapper.expanded');
+      if (expanded && !expanded.contains(e.target)) {
+        expanded.classList.remove('expanded');
+      }
+    });
+  </script>
   
  
     <h2>Raw Sensor Readings</h2>
@@ -64,44 +94,24 @@
     
   
 
-      <script>
+    <script>
+      fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+          const rows = data.values;
+          console.log('📊 Data fetched successfully:', rows) ;
     
-    // Fetch data from Google Sheets API
-//     API_KEY=AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
-//     SHEET_ID=1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
-
-    const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA';
-    const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ';
-    const RANGE = 'alldata!A2:D';
-
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-
-   
-
-    fetch('data.json')
-      .then(response => response.json())
-      .then(data => {
-        const rows = data.values;
-
-
-        // Step 1: Group by timestamp
-        const groupedData = {};
-        rows.forEach(([type, epochtime, timestamp, value]) => {
-          if (!groupedData[epochtime]) {
-            groupedData[epochtime] = {};
-          }
-          groupedData[epochtime][type.toLowerCase()] = value;
-        });
-
-        // Step 2: Render HTML Table
-        const tbody = document.querySelector('#sensor-table tbody');
-        for (const [epochtime, sensors] of Object.entries(groupedData)) {
-          const tr = document.createElement('tr');
-
-          const tdTime = document.createElement('td');
-          tdTime.textContent = new Date(epochtime *1000).toLocaleString();
-          tr.appendChild(tdTime);
-
+          // Step 1: Group by timestamp
+          const groupedData = {};
+          rows.forEach(([type, epochtime, timestamp, value]) => {
+            if (!groupedData[epochtime]) {
+              groupedData[epochtime] = {};
+            }
+            groupedData[epochtime][type.toLowerCase()] = value;
+          });
+    
+          // Step 2: Render HTML Table
+          const tbody = document.querySelector('#sensor-table tbody');
           const columns = [
             'humidity',
             'temperature',
@@ -110,159 +120,159 @@
             'battery state',
             'battery voltage'
           ];
-
-          columns.forEach(col => {
-            const td = document.createElement('td');
-            td.textContent = sensors[col] || '-';
-            tr.appendChild(td);
-          });
-
-          tbody.appendChild(tr);
-        }
-        
-    const getDataByType = (type) => {
-    const points = [];
-    for (const [epochtime, sensors] of Object.entries(groupedData)) {
-      if (sensors[type]) {
-        const y = parseFloat(sensors[type]);
-        if (!isNaN(y)) {
-          points.push({ x: new Date(epochtime*1000), y });
-        }
-      }
-    }
-    return points.sort((a, b) => a.x - b.x); // sort by time
-  };
-
-  
-
-
-  const drawChart = (canvasId, label, data, color, useGradient = false) => {
-          const canvas = document.getElementById(canvasId);
-          const ctx = canvas.getContext('2d');
-
-          let strokeStyle = color;
-
-          if (useGradient) {
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#ef4444'); // red
-            gradient.addColorStop(1, '#3b82f6'); // blue
-            strokeStyle = gradient;
+    
+          for (const [epochtime, sensors] of Object.entries(groupedData)) {
+            const tr = document.createElement('tr');
+    
+            const tdTime = document.createElement('td');
+            tdTime.textContent = new Date(parseInt(epochtime) * 1000).toLocaleString();
+            tr.appendChild(tdTime);
+    
+            columns.forEach(col => {
+              const td = document.createElement('td');
+              td.textContent = sensors[col] !== undefined ? sensors[col] : '-';
+              tr.appendChild(td);
+            });
+    
+            tbody.appendChild(tr);
           }
-
-          new Chart(canvas, {
-            type: 'line',
-            data: {
-              datasets: [{
-                label,
-                data,
-                borderColor: strokeStyle,
-                backgroundColor: strokeStyle,
-                fill: false,
-                tension: 0.4,
-                pointRadius: 4,
-                pointBackgroundColor: strokeStyle
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                x: {
-                  type: 'time',
-                  time: {
-                    unit: 'day', // instead of 'minute'
-                    displayFormats: {
-                      day: 'MMM d, HH:mm' // or 'MMM d, yyyy' if you don’t want time
+    
+          // Step 3: Chart Data Helpers
+          const getDataByType = (type) => {
+            const points = [];
+            for (const [epochtime, sensors] of Object.entries(groupedData)) {
+              if (sensors[type]) {
+                const y = parseFloat(sensors[type]);
+                if (!isNaN(y)) {
+                  points.push({ x: new Date(parseInt(epochtime) * 1000), y });
+                }
+              }
+            }
+            return points.sort((a, b) => a.x - b.x);
+          };
+    
+          // Step 4: Chart Drawing
+          const drawChart = (canvasId, label, data, color, useGradient = false) => {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+    
+            let strokeStyle = color;
+            if (useGradient) {
+              const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+              gradient.addColorStop(0, '#ef4444');
+              gradient.addColorStop(1, '#3b82f6');
+              strokeStyle = gradient;
+            }
+    
+            new Chart(canvas, {
+              type: 'line',
+              data: {
+                datasets: [{
+                  label,
+                  data,
+                  borderColor: strokeStyle,
+                  backgroundColor: strokeStyle,
+                  fill: false,
+                  tension: 0.4,
+                  pointRadius: 4,
+                  pointBackgroundColor: strokeStyle
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    type: 'time',
+                    time: {
+                      unit: 'day',
+                      displayFormats: {
+                        day: 'MMM d, HH:mm'
+                      }
+                    },
+                    ticks: {
+                      maxRotation: 0,
+                      autoSkip: true,
+                      font: { size: 12 }
+                    },
+                    title: {
+                      display: true,
+                      text: 'Time',
+                      font: { size: 16 }
                     }
                   },
-                  ticks: {
-                    maxRotation: 0,
-                    autoSkip: true,
-                    font: { size: 12 }
+                  y: {
+                    beginAtZero: false,
+                    title: { display: true, text: label }
+                  }
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: label,
+                    font: {
+                      size: 30,
+                      weight: 'bold'
+                    },
+                    padding: { top: 10, bottom: 10 }
+                  },
+                  legend: {
+                    display: false
+                  }
+                }
+              }
+            });
+          };
+    
+          const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const percent = Math.min(latestVoltage / maxVoltage, 1);
+            const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
+    
+            new Chart(ctx, {
+              type: 'doughnut',
+              data: {
+                labels: ['Battery', 'Remaining'],
+                datasets: [{
+                  data: [percent * 100, 100 - percent * 100],
+                  backgroundColor: [color, '#e5e7eb'],
+                  borderWidth: 0
+                }]
+              },
+              options: {
+                cutout: '70%',
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    callbacks: {
+                      label: context => `${context.label}: ${context.raw.toFixed(1)}%`
+                    }
                   },
                   title: {
                     display: true,
-                    text: 'Time',
-                    font: { size: 16 }
+                    text: `Battery: ${latestVoltage.toFixed(2)}V`,
+                    font: { size: 18 }
                   }
                 }
-                },
-                y: {
-                  beginAtZero: false,
-                  title: { display: true, text: label }
-                }
-              },
-              plugins: {
-                title: {
-                  display: true,
-                  text: label,
-                  font: {
-                    size: 30,
-                    weight: 'bold'
-                  },
-                  padding: { top: 10, bottom: 10 }
-                },
-                legend: {
-                  display: false // You can still use the title as the chart header
-                }
               }
-          });
-        };
-
-        const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  const percent = Math.min(latestVoltage / maxVoltage, 1);
-  const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
-
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Battery', 'Remaining'],
-      datasets: [{
-        data: [percent * 100, 100 - percent * 100],
-        backgroundColor: [color, '#e5e7eb'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      cutout: '70%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: context => `${context.label}: ${context.raw.toFixed(1)}%`
-          }
-        },
-        title: {
-          display: true,
-          text: `Battery: ${(latestVoltage).toFixed(2)}V`,
-          font: { size: 18 }
-        }
-      }
-    }
-  });
-};
-
-        // Draw battery chart
-        const latestBatteryVoltage = parseFloat(getDataByType("battery voltage").slice(-1)[0]?.y || 0);
-        drawBatteryChart('batteryPercent', latestBatteryVoltage);
-        
-  
-
-  // Draw temperature and humidity charts
-
-        drawChart('temperatureChart', "Temperature (ºC)", getDataByType("temperature"), "#f97316", true);
-        drawChart('humidityChart', "Humidity (%)", getDataByType("humidity"), "#0ea5e9", true);
-        drawChart('pdendrochart', "Point Dendrometer (µm)", getDataByType("point dendrometer"), "#a855f7");
-        drawChart('LDchart', "LD", getDataByType("ld"), "#facc15");
-        drawChart('batteryChart', "Battery Voltage", getDataByType("battery voltage"), "#22c55e");
-  })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-  
-  });
-</script>
+            });
+          };
+    
+          // Step 5: Draw All Charts
+          drawBatteryChart('batteryPercent', parseFloat(getDataByType("battery voltage").slice(-1)[0]?.y || 0));
+    
+          drawChart('temperatureChart', "Temperature (ºC)", getDataByType("temperature"), "#f97316", true);
+          drawChart('humidityChart', "Humidity (%)", getDataByType("humidity"), "#0ea5e9", true);
+          drawChart('pdendrochart', "Point Dendrometer (µm)", getDataByType("point dendrometer"), "#a855f7");
+          drawChart('LDchart', "LD", getDataByType("ld"), "#facc15");
+          drawChart('batteryChart', "Battery Voltage", getDataByType("battery voltage"), "#22c55e");
+        })
+        .catch(error => {
+          console.error('❌ Error fetching or processing data:', error);
+        });
+    </script>
+    
 
 </body>
 </html>

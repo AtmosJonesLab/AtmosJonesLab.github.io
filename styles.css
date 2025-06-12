@@ -163,3 +163,36 @@ body {
       margin-bottom: 20px;
     }
    
+
+    .chart-wrapper {
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 10px;
+    }
+    
+    .chart-wrapper canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+    
+    .chart-wrapper.expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      width: 90vw;
+      height: 80vh;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      border-radius: 16px;
+    }
+    
+    .chart-wrapper.expanded canvas {
+      height: 100% !important;
+    }
