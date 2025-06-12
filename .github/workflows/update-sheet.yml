@@ -33,10 +33,12 @@ jobs:
           import fetch from 'node-fetch';
           import fs from 'fs';
 
-          const apiKey = process.env.API_KEY;
-          const sheetId = process.env.SHEET_ID;
-          const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/data?key=${apiKey}`;
+          const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA';
+          const SHEET_ID = '1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ';
+          const RANGE = 'alldata!A2:D';
 
+          const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+          
           const run = async () => {
           try {
             const res = await fetch(url);
