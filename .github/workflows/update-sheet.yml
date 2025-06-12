@@ -27,8 +27,8 @@ jobs:
           import fetch from 'node-fetch';
           import fs from 'fs';
 
-          API_KEY=AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
-          SHEET_ID=1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+          API_KEY='AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA'
+          SHEET_ID='1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ'
 
           const url = 'https://sheets.googleapis.com/v4/spreadsheets/SHEET_ID/values/Sheet1?alt=json&key=API_KEY';
 
