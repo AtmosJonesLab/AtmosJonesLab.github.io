@@ -163,6 +163,11 @@ body {
       margin-bottom: 20px;
     }
    
+    #batteryPercent {
+      width: 200px !important;
+      height: 200px !important;
+      flex-shrink: 0;
+    }
 
     .chart-wrapper {
       position: relative;
