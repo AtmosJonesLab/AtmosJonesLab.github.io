@@ -68,7 +68,7 @@ jobs:
           
       - name: Commit and push changes
         env:
-          PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
