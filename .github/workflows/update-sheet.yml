@@ -25,10 +25,17 @@ jobs:
           API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
           SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
         run: |
-          echo "Fetching Google Sheet..."
-          node <<EOF
+          - name: Create fetch script and install dependencies|
+          # Create minimal package.json
+          echo '{ "type": "module", "dependencies": { "node-fetch": "^3.4.0" } }' > package.json
+
+          # Install node-fetch
+          npm install
+
+          # Write the fetch script
+          cat <<'EOF' > fetch-data.mjs
           import fetch from 'node-fetch';
-          import { writeFileSync } from 'fs';
+          import fs from 'fs';
 
           const apiKey = process.env.API_KEY;
           const sheetId = process.env.SHEET_ID;
