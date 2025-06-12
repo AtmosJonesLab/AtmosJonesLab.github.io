@@ -3,7 +3,7 @@ name: Update Google Sheet Data Daily
 on:
   schedule:
     - cron: '0 6 * * *'  # every day at 6 AM UTC
-  workflow_dispatch:       # allows manual runs for testing
+  workflow_dispatch:
 
 jobs:
   update-data:
@@ -12,24 +12,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Fetch Google Sheet and update data.json
-        env:
-          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
-          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+      - name: Create fetch script and install dependencies
         run: |
-          - name: Create fetch script and install dependencies|
-          # Create minimal package.json
+          # Create package.json with node-fetch dependency
           echo '{ "type": "module", "dependencies": { "node-fetch": "^3.4.0" } }' > package.json
 
-          # Install node-fetch
           npm install
 
           # Write the fetch script
@@ -39,16 +32,31 @@ jobs:
 
           const apiKey = process.env.API_KEY;
           const sheetId = process.env.SHEET_ID;
-          const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/data?key=\${apiKey}\`;
+          const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/data?key=${apiKey}`;
 
           const run = async () => {
-            const res = await fetch(url);
-            const json = await res.json();
-            writeFileSync('data.json', JSON.stringify(json, null, 2));
+            try {
+              const res = await fetch(url);
+              if (!res.ok) {
+                throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+              }
+              const json = await res.json();
+              fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
+              console.log('✅ Successfully updated data.json');
+            } catch (err) {
+              console.error('❌ Failed to fetch data:', err);
+              process.exit(1);
+            }
           };
           run();
           EOF
 
+          # Run the script
+          node fetch-data.mjs
+        env:
+          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
+          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+          
       - name: Commit and push changes
         run: |
           git config user.name github-actions
