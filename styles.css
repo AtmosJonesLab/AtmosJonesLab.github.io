@@ -166,7 +166,7 @@ body {
 
     .chart-wrapper {
       position: relative;
-      transition: all 0.3s ease;
+      /* transition: all 0.3s ease; */
       cursor: pointer;
       background: white;
       border-radius: 12px;
@@ -181,7 +181,7 @@ body {
     .chart-wrapper canvas {
       width: 100% !important;
       height: 300px !important;
-      transition: height 0.3s ease;
+      /* transition: height 0.3s ease; */
     }
     
     .chart-wrapper.expanded {
