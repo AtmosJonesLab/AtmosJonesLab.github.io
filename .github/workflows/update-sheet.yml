@@ -21,31 +21,26 @@ jobs:
           node-version: '20'
 
       - name: Fetch data from Google Sheets
-        run: |
-          # Create a script to fetch and save data
-          cat <<EOF > fetch-data.mjs
-          import fetch from 'node-fetch';
-          import fs from 'fs';
-
-          API_KEY='AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA'
-          SHEET_ID='1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ'
-
-          const url = 'https://sheets.googleapis.com/v4/spreadsheets/SHEET_ID/values/Sheet1?alt=json&key=API_KEY';
-
-          const res = await fetch(url);
-          if (!res.ok) {
-            throw new Error(\`Failed to fetch data: \${res.status}\`);
-          }
-
-          const json = await res.json();
-          fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
-          console.log('✅ Data saved to data.json');
-          EOF
-
-          # Run the script
-          node fetch-data.mjs
         env:
-          NODE_NO_WARNINGS: 1
+          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
+          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+        run: |
+          echo "Fetching Google Sheet data..."
+          node <<EOF
+          import fetch from 'node-fetch';
+          import { writeFileSync } from 'fs';
+
+          const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${process.env.SHEET_ID}/values/data?key=\${process.env.API_KEY}\`;
+
+          const run = async () => {
+            const res = await fetch(url);
+            const json = await res.json();
+            writeFileSync('data.json', JSON.stringify(json, null, 2));
+            console.log("Saved data.json");
+          };
+
+          run();
+          EOF
 
       - name: Commit and push changes
         run: |
