@@ -32,19 +32,22 @@
 
   <div class="graph-grid">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
       <canvas id="temperatureChart"></canvas>
     </div>
-
     <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
       <canvas id="humidityChart"></canvas>
     </div>
   </div>
 
   <div class="graph-grid">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
       <canvas id='pdendrochart' ></canvas>
     </div>
     <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
       <canvas id='LDchart'></canvas>
     </div>
   </div>

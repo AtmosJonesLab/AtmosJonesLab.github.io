@@ -172,6 +172,7 @@ body {
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 10px;
+      overflow: hidden;
     }
     
     .chart-wrapper canvas {
@@ -179,6 +180,7 @@ body {
       height: 300px !important;
     }
     
+    /* Expanded state */
     .chart-wrapper.expanded {
       position: fixed;
       top: 50%;
@@ -195,4 +197,22 @@ body {
     
     .chart-wrapper.expanded canvas {
       height: 100% !important;
+    }
+    
+    /* Close button only visible when expanded */
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #444;
+      z-index: 10;
+      display: none;
+    }
+    
+    .chart-wrapper.expanded .close-btn {
+      display: block;
     }
