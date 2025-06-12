@@ -2,50 +2,57 @@ name: Update Google Sheet Data Daily
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Runs daily at 6:00 AM UTC
-  workflow_dispatch:     # Allows manual trigger
+    - cron: '0 6 * * *'  # every day at 6 AM UTC
+  workflow_dispatch:       # allows manual runs for testing
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      - name: Install dependencies
-        run: npm install node-fetch@3
-
-      - name: Fetch Google Sheet and update data.json
-        env:
-          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
-          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+      - name: Fetch data from Google Sheets
         run: |
-          echo "Fetching Google Sheet..."
-          node <<EOF
+          # Create a script to fetch and save data
+          cat <<EOF > fetch-data.mjs
           import fetch from 'node-fetch';
-          import { writeFileSync } from 'fs';
+          import fs from 'fs';
 
-          const apiKey = process.env.API_KEY;
-          const sheetId = process.env.SHEET_ID;
-          const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/data?key=\${apiKey}\`;
+          API_KEY=AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
+          SHEET_ID=1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
 
-          const run = async () => {
-            const res = await fetch(url);
-            const json = await res.json();
-            writeFileSync('data.json', JSON.stringify(json, null, 2));
-          };
-          run();
+          const url = 'https://sheets.googleapis.com/v4/spreadsheets/SHEET_ID/values/Sheet1?alt=json&key=API_KEY';
+
+          const res = await fetch(url);
+          if (!res.ok) {
+            throw new Error(\`Failed to fetch data: \${res.status}\`);
+          }
+
+          const json = await res.json();
+          fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
+          console.log('✅ Data saved to data.json');
           EOF
+
+          # Run the script
+          node fetch-data.mjs
+        env:
+          NODE_NO_WARNINGS: 1
 
       - name: Commit and push changes
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add data.json
-          git commit -m "Update data.json from Google Sheets"
+          git commit -m "Update data.json from Google Sheets" || echo "No changes to commit"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
