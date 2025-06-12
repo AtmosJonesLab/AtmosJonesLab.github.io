@@ -79,4 +79,3 @@ jobs:
           git remote -v
           echo "PAT length: ${#PERSONAL_ACCESS_TOKEN}"
           git push
-
