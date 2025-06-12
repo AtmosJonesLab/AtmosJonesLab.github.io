@@ -76,5 +76,6 @@ jobs:
           git commit -m "Update data.json from Google Sheets" || echo "No changes to commit"
           git remote set-url origin https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git remote -v
+          echo "PAT length: ${#PERSONAL_ACCESS_TOKEN}"
           git push
 
