@@ -24,7 +24,7 @@ jobs:
       - name: Create fetch script and install dependencies
         run: |
           # Create package.json with node-fetch dependency
-          echo '{ "type": "module", "dependencies": { "node-fetch": "^3.4.0" } }' > package.json
+          echo '{ "type": "module", "dependencies": { "node-fetch": "^3.3.2" } }' > package.json
 
           npm install
 
