@@ -1,0 +1,51 @@
+name: Update Google Sheet Data Daily
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Runs daily at 6:00 AM UTC
+  workflow_dispatch:     # Allows manual trigger
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install node-fetch@3
+
+      - name: Fetch Google Sheet and update data.json
+        env:
+          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
+          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+        run: |
+          echo "Fetching Google Sheet..."
+          node <<EOF
+          import fetch from 'node-fetch';
+          import { writeFileSync } from 'fs';
+
+          const apiKey = process.env.API_KEY;
+          const sheetId = process.env.SHEET_ID;
+          const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/data?key=\${apiKey}\`;
+
+          const run = async () => {
+            const res = await fetch(url);
+            const json = await res.json();
+            writeFileSync('data.json', JSON.stringify(json, null, 2));
+          };
+          run();
+          EOF
+
+      - name: Commit and push changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add data.json
+          git commit -m "Update data.json from Google Sheets"
+          git push

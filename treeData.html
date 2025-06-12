@@ -78,7 +78,7 @@
 
    
 
-    fetch(url)
+    fetch('data.json')
       .then(response => response.json())
       .then(data => {
         const rows = data.values;
@@ -99,7 +99,7 @@
           const tr = document.createElement('tr');
 
           const tdTime = document.createElement('td');
-          tdTime.textContent = epochtime;
+          tdTime.textContent = new Date(epochtime *1000).toLocaleString();
           tr.appendChild(tdTime);
 
           const columns = [
