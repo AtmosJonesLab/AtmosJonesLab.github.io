@@ -185,7 +185,8 @@ th {
 
 .chart-wrapper.expanded {
   position: fixed;
-  inset: 0;
+  inset: 0; /* fills the screen */
+  margin: auto;
   z-index: 1000;
   width: 90vw;
   height: 80vh;
