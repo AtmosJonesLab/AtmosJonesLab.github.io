@@ -271,13 +271,13 @@
           };
     
           // Step 5: Draw All Charts
-          drawBatteryChart('batteryPercent', parseFloat(getDataByType("battery voltage").slice(-1)[0]?.y || 0));
-    
-          drawChart('temperatureChart', "Temperature (ºC)", getDataByType("temperature"), "#f97316", true);
-          drawChart('humidityChart', "Humidity (%)", getDataByType("humidity"), "#0ea5e9", true);
-          drawChart('pdendrochart', "Point Dendrometer (µm)", getDataByType("point dendrometer"), "#a855f7");
-          drawChart('LDchart', "LD", getDataByType("ld"), "#facc15");
-          drawChart('batteryChart', "Battery Voltage", getDataByType("battery voltage"), "#22c55e");
+          drawBatteryChart('batteryPercent', parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0));
+
+          drawChart('temperatureChart', "Temperature (ºC)", sensorData["temperature"], "#f97316", true);
+          drawChart('humidityChart', "Humidity (%)", sensorData["humidity"], "#0ea5e9", true);
+          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], "#a855f7");
+          drawChart('LDchart', "LD", sensorData["ld"], "#facc15");
+          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], "#22c55e");
         })
         .catch(error => {
           console.error('❌ Error fetching or processing data:', error);
