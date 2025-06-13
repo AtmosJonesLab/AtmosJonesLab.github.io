@@ -117,20 +117,22 @@
     
     
     <script>
-      fetch('https://script.google.com/macros/s/AKfycbwi_57RzutyqTDVbNEAbUc1U2OjvvqLxbRna4Ndc6H26omTuwul9LOIltTcjp6GuME/exec')
+      fetch('https://script.google.com/macros/s/AKfycbxRrH8FygxXP57qg0hW-aaCNlt7TJHNqb-hG66Fy9MnQ_0DI31wHF-VFtKFyKHFoPY/exec')
         .then(res => res.json())
         .then(data => {
           console.log("Weather data:", data);
           const w = data.davis_current_observation;
+          console.log("Weather data:", data.davis_current_observation);
+          console.log(data.temp_f);
     
           const cardData = [
-            { label: "Temperature", value: `${w.temp_f}°F (${w.temp_c}°C)` },
-            { label: "Humidity", value: `${w.relative_humidity}%` },
-            { label: "Pressure", value: `${w.pressure_mb} mb` },
-            { label: "Wind", value: `${w.wind_mph} mph (${w.wind_dir})` },
-            { label: "Wind Chill", value: `${w.windchill_f}°F` },
-            { label: "Heat Index", value: `${w.heat_index_f}°F` },
-            { label: "Dew Point", value: `${w.dewpoint_f}°F` },
+            { label: "Temperature", value: `${data.temp_f}°F (${data.temp_c}°C)` },
+            { label: "Humidity", value: `${data.relative_humidity}%` },
+            { label: "Pressure", value: `${data.pressure_mb} mb` },
+            { label: "Wind", value: `${data.wind_mph} mph (${w.wind_dir})` },
+            { label: "Wind Chill", value: `${data.windchill_f}°F` },
+            { label: "Heat Index", value: `${data.heat_index_f}°F` },
+            { label: "Dew Point", value: `${data.dewpoint_f}°F` },
           ];
           const container = document.getElementById("weatherCards");
           cardData.forEach(item => {
@@ -143,7 +145,7 @@
     
           // Footer
           document.getElementById("weatherFooter").textContent =
-            `Data from Davis Instruments • Station: ${w.station_name} • Last updated: ${w.observation_time}`;
+            `Data from Davis Instruments • Station: ${w.station_name} • Last updated: ${data.observation_time}`;
         })
         .catch(err => {
           console.error("Weather data error:", err);
@@ -155,7 +157,7 @@
   
 
 
-    
+
 
     <script>
       fetch('data.json')
