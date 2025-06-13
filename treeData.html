@@ -103,62 +103,67 @@
       fetch('data.json')
         .then(response => response.json())
         .then(data => {
-  const rows = data.values;
+          const rows = data.values;
 
-  // Step 1: Build separate arrays for each sensor type
-  const sensorData = {
-    "temperature": [],
-    "humidity": [],
-    "point dendrometer": [],
-    "ld": [],
-    "battery state": [],
-    "battery voltage": []
-  };
+          // Step 1: Build separate arrays for each sensor type
+          const sensorData = {
+            "temperature": [],
+            "humidity": [],
+            "point dendrometer": [],
+            "ld": [],
+            "battery state": [],
+            "battery voltage": []
+          };
 
-  const tableRowsByTimestamp = {};
+          const tableRowsByTimestamp = {};
 
-  rows.forEach(([type, epochtime, timestamp, value]) => {
-    const key = type.toLowerCase();
-    const numericValue = parseFloat(value);
-    const time = new Date(parseInt(epochtime) * 1000);
+          rows.forEach(([type, epochtime, timestamp, value]) => {
+            const key = type.toLowerCase();
+            const numericValue = parseFloat(value);
+            const time = new Date(parseInt(epochtime) * 1000);
 
-    if (!isNaN(numericValue) && sensorData[key]) {
-      sensorData[key].push({ x: time, y: numericValue });
-    }
+            if (!isNaN(numericValue) && sensorData[key]) {
+              sensorData[key].push({ x: time, y: numericValue });
+            }
 
-    // Build table rows by timestamp
-    if (!tableRowsByTimestamp[epochtime]) {
-      tableRowsByTimestamp[epochtime] = { time: time.toLocaleString() };
-    }
-    tableRowsByTimestamp[epochtime][key] = value;
-  });
+            // Build table rows by timestamp
+            if (!tableRowsByTimestamp[epochtime]) {
+              tableRowsByTimestamp[epochtime] = { time: time.toLocaleString() };
+            }
+            tableRowsByTimestamp[epochtime][key] = value;
+          });
+          // Sort all sensor data by timestamp
+          for (const key in sensorData) {
+            sensorData[key].sort((a, b) => a.x - b.x);
+          }
 
-  // Step 2: Render HTML Table
-  const tbody = document.querySelector('#sensor-table tbody');
-  for (const [epochtime, sensors] of Object.entries(tableRowsByTimestamp)) {
-    const tr = document.createElement('tr');
 
-    const tdTime = document.createElement('td');
-    tdTime.textContent = sensors.time;
-    tr.appendChild(tdTime);
+          // Step 2: Render HTML Table
+          const tbody = document.querySelector('#sensor-table tbody');
+          for (const [epochtime, sensors] of Object.entries(tableRowsByTimestamp)) {
+            const tr = document.createElement('tr');
 
-    const columns = [
-      'humidity',
-      'temperature',
-      'point dendrometer',
-      'ld',
-      'battery state',
-      'battery voltage'
-    ];
+            const tdTime = document.createElement('td');
+            tdTime.textContent = sensors.time;
+            tr.appendChild(tdTime);
 
-    columns.forEach(col => {
-      const td = document.createElement('td');
-      td.textContent = sensors[col] || '-';
-      tr.appendChild(td);
-    });
+            const columns = [
+              'humidity',
+              'temperature',
+              'point dendrometer',
+              'ld',
+              'battery state',
+              'battery voltage'
+            ];
 
-    tbody.appendChild(tr);
-  }
+            columns.forEach(col => {
+              const td = document.createElement('td');
+              td.textContent = sensors[col] || '-';
+              tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+          }
     
           // Step 4: Chart Drawing
           const drawChart = (canvasId, label, data, color, useGradient = false) => {
