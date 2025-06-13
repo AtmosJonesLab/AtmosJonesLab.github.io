@@ -5,7 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Team - Atmos Jones Lab</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #003049;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    section {
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .team-member {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .team-member img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .team-member h3 {
+      margin: 0 0 0.25rem;
+    }
+
+    .team-member p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -15,9 +77,37 @@
       <a href="projects.html">Projects</a>
     </nav>
   </header>
+
   <section>
-    <h2>Team</h2>
-    <p>Details about the team go here.</p>
+    <h2>Meet the Team</h2>
+
+    <div class="team-member">
+      <img src="Screenshot 2025-06-13 at 10.06.49 AM.png" alt="Team member photo">
+      <div>
+        <h3>Taylor Jones, Ph.D.</h3>
+        <p>Professor in the Earth Commons Institute at Georgetown University. Dr. Jones specializes in satellite remote sensing 
+          and environmental instrumentation, developing custom sensors for monitoring greenhouse gases and ecological systems.</p>
+      </div>
+    </div>
+    
+    <div class="team-member">
+      <img src="Screenshot 2025-06-13 at 10.07.12 AM.png" alt="Team member photo">
+      <div>
+        <h3>Jonathan Dooley, Ph.D.</h3>
+        <p>Postdoctoral Fellow at the Earth Commons Institute at Georgetown University. Dr. Dooley's research focuses on 
+          satellite-based greenhouse gas monitoring and advancing techniques to interpret large-scale atmospheric data.</p>
+      </div>
+    </div>
+    
+    <div class="team-member">
+      <img src="BC0AB515-5EAC-41D7-AFD2-DC2AC259B96D.jpeg" alt="Team member photo">
+      <div>
+        <h3>Emma Lindbergh</h3>
+        <p>Undergraduate student at Georgetown University pursuing a major in Computer Science and a minor in Environmental Studies.
+        </p>
+      </div>
+    </div>
+    
   </section>
 </body>
 </html>
