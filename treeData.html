@@ -53,15 +53,17 @@
   </div>
 
   <div class="graph-grid">
-        <div class="chart-wrapper" onclick="toggleExpand(this)"></div>
-        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-        <canvas id='batteryChart' ></canvas>
-      </div>
     
-        <canvas id="batteryPercent" width="200px" height="200px"></canvas>
+    <div class="battery-charts-row">
+      <div class="chart-wrapper" onclick="toggleExpand(this)">
+        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
+        <canvas id="batteryChart"></canvas>
+      </div>
+      <div class="battery-percent-wrapper">
+        <canvas id="batteryPercent" width="200" height="200"></canvas>
+      </div>
+    </div>
   </div>
-  
- 
      
 
   <script>

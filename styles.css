@@ -264,4 +264,28 @@ th {
   color: #555;
 }
 
+
+.battery-charts-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* Optional: constrain battery percent position */
+.battery-percent-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  flex-shrink: 0;
+}
+
+
     
