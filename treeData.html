@@ -83,7 +83,7 @@
 
 
   <section id="weather-section">
-    <h2 class="section-title">Hoya Harvest Weather</h2>
+    <h2 class="section-title">Hoya Harvest Weather Station</h2>
   
     <div class="chart-grid" id="weatherCards">
       <!-- Weather cards injected by JavaScript -->
@@ -120,10 +120,8 @@
       fetch('https://script.google.com/macros/s/AKfycbxRrH8FygxXP57qg0hW-aaCNlt7TJHNqb-hG66Fy9MnQ_0DI31wHF-VFtKFyKHFoPY/exec')
         .then(res => res.json())
         .then(data => {
-          console.log("Weather data:", data);
           const w = data.davis_current_observation;
-          console.log("Weather data:", data.davis_current_observation);
-          console.log(data.temp_f);
+        
     
           const cardData = [
             { label: "Temperature", value: `${data.temp_f}°F (${data.temp_c}°C)` },
@@ -155,7 +153,6 @@
     </script>
     
   
-
 
 
 
