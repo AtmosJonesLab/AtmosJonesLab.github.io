@@ -53,10 +53,7 @@
   </div>
 
   <div class="graph-grid">
-    <div class="chart-wrapper" onclick="toggleExpand(this)"></div>
-    <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
     <canvas id='batteryChart' ></canvas>
-    </div>
     <canvas id="batteryPercent" width="200px" height="200px"></canvas>
   </div>
   
@@ -90,13 +87,6 @@
   
     <div class="chart-grid" id="weatherCards">
       <!-- Weather cards injected by JavaScript -->
-    </div>
-  
-    <div class="graph-grid">
-      <div class="chart-wrapper">
-        <button class="close-btn" onclick="this.parentElement.classList.remove('expanded')">&times;</button>
-        <canvas id="weatherChart"></canvas>
-      </div>
     </div>
   
     <p class="footer" id="weatherFooter"></p>
@@ -145,7 +135,6 @@
             { label: "Heat Index", value: `${w.heat_index_f}°F` },
             { label: "Dew Point", value: `${w.dewpoint_f}°F` },
           ];
-    
           const container = document.getElementById("weatherCards");
           cardData.forEach(item => {
             const div = document.createElement("div");
@@ -153,49 +142,7 @@
             div.innerHTML = `<h4>${item.label}</h4><p>${item.value}</p>`;
             container.appendChild(div);
           });
-    
-          // Chart.js setup
-          const ctx = document.getElementById('weatherChart').getContext('2d');
-          new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: ['Temp °F', 'Heat Index °F', 'Wind Chill °F', 'Dew Point °F'],
-              datasets: [{
-                label: 'Comparison',
-                data: [
-                  parseFloat(w.temp_f),
-                  parseFloat(w.heat_index_f),
-                  parseFloat(w.windchill_f),
-                  parseFloat(w.dewpoint_f)
-                ],
-                backgroundColor: ['#38bdf8', '#facc15', '#fb923c', '#60a5fa']
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'Weather Metrics (°F)',
-                  color: "#1e293b",
-                  font: {
-                    size: 16,
-                    weight: "bold"
-                  }
-                },
-                legend: { display: false }
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: { color: "#1e293b" }
-                },
-                x: {
-                  ticks: { color: "#1e293b" }
-                }
-              }
-            }
-          });
+
     
           // Footer
           document.getElementById("weatherFooter").textContent =
@@ -209,12 +156,6 @@
     </script>
     
   
-
-
-
-
-
-
 
 
     <script>
