@@ -302,6 +302,9 @@
           };
     
           const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
+            if (maxVoltage < latestVoltage){
+              maxVoltage = latestVoltage;
+            }
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
             const percent = Math.min(latestVoltage / maxVoltage, 1);
