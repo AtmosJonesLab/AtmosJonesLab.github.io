@@ -272,6 +272,46 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
+
+
+          // Build table rows by timestamp
+          if (!tableRowsByTimestamp[epochtime]) {
+              tableRowsByTimestamp[epochtime] = { time: time.toLocaleString() };
+            }
+            tableRowsByTimestamp[epochtime][key] = value;
+          });
+          // Sort all sensor data by timestamp
+          for (const key in sensorData) {
+            sensorData[key].sort((a, b) => a.x - b.x);
+          }
+
+
+          // Step 2: Render HTML Table
+          const tbody = document.querySelector('#sensor-table tbody');
+          for (const [epochtime, sensors] of Object.entries(tableRowsByTimestamp)) {
+            const tr = document.createElement('tr');
+
+            const tdTime = document.createElement('td');
+            tdTime.textContent = sensors.time;
+            tr.appendChild(tdTime);
+
+            const columns = [
+              'humidity',
+              'temperature',
+              'point dendrometer',
+              'ld',
+              'battery state',
+              'battery voltage'
+            ];
+
+            columns.forEach(col => {
+              const td = document.createElement('td');
+              td.textContent = sensors[col] || '-';
+              tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+          }
     
           const sensor = apiData.sensors.find(s => s.sensor_type === 53 && s.data_structure_type === 7);
           if (!sensor || !sensor.data || sensor.data.length === 0) {
@@ -291,12 +331,12 @@
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
             { label: "Weather API Temperature", data: weatherTemp, color: "#ef4444" }
-          ], true);
+          ], false);
     
           drawChart("combinedHumChart", "Humidity (%)", [
             { label: "Local Humidity", data: sensorData["humidity"], color: "#0ea5e9" },
             { label: "Weather API Humidity", data: weatherHum, color: "#3b82f6" }
-          ], true);
+          ], false);
     
           drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], false);
           drawChart('LDchart', "LD", sensorData["ld"], false);
