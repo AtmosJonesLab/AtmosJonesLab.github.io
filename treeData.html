@@ -263,11 +263,17 @@
     
           rows.forEach(([type, epochtime, timestamp, value]) => {
             const key = type.toLowerCase();
-            const numericValue = parseFloat(value);
             const time = new Date(parseInt(epochtime) * 1000);
-    
-            if (!isNaN(numericValue) && sensorData[key]) {
-              sensorData[key].push({ x: time, y: numericValue });
+
+            if (!sensorData[key]) return;
+
+            if (key === "battery state") {
+              sensorData[key].push({ x: time, y: value }); // keep as string
+            } else {
+              const numericValue = parseFloat(value);
+              if (!isNaN(numericValue)) {
+                sensorData[key].push({ x: time, y: numericValue });
+              }
             }
           });
     
