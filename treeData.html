@@ -245,7 +245,7 @@
     
       // Load both local JSON and Google Sheets JSON
       Promise.all([
-        fetch('data.json').then(res => res.json()), 
+        fetch('./data.json').then(res => res.json()), 
         fetch("https://script.google.com/macros/s/AKfycbyVt7ckVjdY4MmYsAiMIowGTLqNgQ3LwI-E2S_bRkqWCHDmLNedaX2q1LCyd_SPFw/exec").then(res => res.json())
       ])
         .then(([localData, apiData]) => {
@@ -328,9 +328,9 @@
             { label: "Weather API Humidity", data: weatherHum, color: "#ef4444" }
           ], false);
     
-          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], "#a855f7");
-          drawChart('LDchart', "LD", sensorData["ld"], "#facc15");
-          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], "#22c55e");
+          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], false);
+          drawChart('LDchart', "LD", sensorData["ld"], false);
+          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], false);
     
           const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
