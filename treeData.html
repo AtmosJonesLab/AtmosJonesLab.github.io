@@ -328,9 +328,17 @@
             { label: "Weather API Humidity", data: weatherHum, color: "#ef4444" }
           ], false);
     
-          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], false);
-          drawChart('LDchart', "LD", sensorData["ld"], false);
-          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], false);
+          drawChart('pdendrochart', "Point Dendrometer (µm)", [
+            { label: "Point Dendrometer", data: sensorData["point dendrometer"], color: "#a855f7" }
+          ]);
+
+          drawChart('LDchart', "LD", [
+            { label: "LD", data: sensorData["ld"], color: "#facc15" }
+          ]);
+
+          drawChart('batteryChart', "Battery Voltage", [
+            { label: "Battery Voltage", data: sensorData["battery voltage"], color: "#22c55e" }
+          ]);
     
           const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
