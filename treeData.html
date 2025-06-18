@@ -96,12 +96,12 @@
     <div class="graph-grid">
       <div class="chart-wrapper" onclick="toggleExpand(this)">
         <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-        <canvas id="weatherTempChart"></canvas>
+        <canvas id="weatherRainfall"></canvas>
       </div>
-      <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <!-- <div class="chart-wrapper" onclick="toggleExpand(this)">
         <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
         <canvas id="weatherHumChart"></canvas>
-      </div>
+      </div> -->
     </div>
 
   
@@ -350,6 +350,10 @@
     
           const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
+
+          drawChart('weatherRainfall', "Rainfall (mm)", [
+            { label: "Rainfall", data: weatherRainfall, color: "#0ea5e9" }
+          ]);
         })
         .catch(err => {
           console.error("Error loading or rendering data:", err);
