@@ -130,264 +130,22 @@
       <tbody></tbody>
     </table>
     
-   
-
-    
-    
-    
-    <!-- <script>
-      fetch('https://script.google.com/macros/s/AKfycbxql6zAFbGYuW6WElwsS5u00Wq534PX_OPcSzSahuwNRM1sO0ISYimGYEoAQikjwco/exec')
-        .then(res => res.json())
-        .then(data => {
-          const w = data.davis_current_observation;
-        
-    
-          const cardData = [
-            { label: "Temperature", value: `${data.temp_f}°F (${data.temp_c}°C)` },
-            { label: "Humidity", value: `${data.relative_humidity}%` },
-            { label: "Pressure", value: `${data.pressure_mb} mb` },
-            { label: "Wind", value: `${data.wind_mph} mph (${w.wind_dir})` },
-            { label: "Wind Chill", value: `${data.windchill_f}°F` },
-            { label: "Heat Index", value: `${data.heat_index_f}°F` },
-            { label: "Dew Point", value: `${data.dewpoint_f}°F` },
-          ];
-          const container = document.getElementById("weatherCards");
-          cardData.forEach(item => {
-            const div = document.createElement("div");
-            div.className = "card";
-            div.innerHTML = `<h4>${item.label}</h4><p>${item.value}</p>`;
-            container.appendChild(div);
-          });
-
-    
-          // Footer
-          document.getElementById("weatherFooter").textContent =
-            `Data from Davis Instruments • Station: ${w.station_name} • Last updated: ${data.observation_time}`;
-        })
-        .catch(err => {
-          console.error("Weather data error:", err);
-          document.getElementById("weatherCards").innerHTML =
-            `<div class="card"><h4>Error</h4><p>Could not load weather data.</p></div>`;
-        });
-    </script>
-     -->
-
-  
-
-
 
     <script>
-      fetch('data.json')
-        .then(response => response.json())
-        .then(data => {
-          const rows = data.values;
-
-          // Step 1: Build separate arrays for each sensor type
-          const sensorData = {
-            "temperature": [],
-            "humidity": [],
-            "point dendrometer": [],
-            "ld": [],
-            "battery state": [],
-            "battery voltage": []
-          };
-
-          const tableRowsByTimestamp = {};
-
-          rows.forEach(([type, epochtime, timestamp, value]) => {
-            const key = type.toLowerCase();
-            const numericValue = parseFloat(value);
-            const time = new Date(parseInt(epochtime) * 1000);
-
-            if (!isNaN(numericValue) && sensorData[key]) {
-              sensorData[key].push({ x: time, y: numericValue });
-            }
-
-            // Build table rows by timestamp
-            if (!tableRowsByTimestamp[epochtime]) {
-              tableRowsByTimestamp[epochtime] = { time: time.toLocaleString() };
-            }
-            tableRowsByTimestamp[epochtime][key] = value;
-          });
-          // Sort all sensor data by timestamp
-          for (const key in sensorData) {
-            sensorData[key].sort((a, b) => a.x - b.x);
-          }
-
-
-          // Step 2: Render HTML Table
-          const tbody = document.querySelector('#sensor-table tbody');
-          for (const [epochtime, sensors] of Object.entries(tableRowsByTimestamp)) {
-            const tr = document.createElement('tr');
-
-            const tdTime = document.createElement('td');
-            tdTime.textContent = sensors.time;
-            tr.appendChild(tdTime);
-
-            const columns = [
-              'humidity',
-              'temperature',
-              'point dendrometer',
-              'ld',
-              'battery state',
-              'battery voltage'
-            ];
-
-            columns.forEach(col => {
-              const td = document.createElement('td');
-              td.textContent = sensors[col] || '-';
-              tr.appendChild(td);
-            });
-
-            tbody.appendChild(tr);
+      const drawChart = (canvasId, label, datasets, useGradient = false) => {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+    
+        const formattedDatasets = Array.isArray(datasets) ? datasets.map(({ label, data, color }) => {
+          let strokeStyle = color;
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ef4444');
+            gradient.addColorStop(1, '#3b82f6');
+            strokeStyle = gradient;
           }
     
-          // Step 4: Chart Drawing
-          const drawChart = (canvasId, label, data, color, useGradient = false) => {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext('2d');
-    
-            let strokeStyle = color;
-            if (useGradient) {
-              const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-              gradient.addColorStop(0, '#ef4444');
-              gradient.addColorStop(1, '#3b82f6');
-              strokeStyle = gradient;
-            }
-    
-            new Chart(canvas, {
-              type: 'line',
-              data: {
-                datasets: [{
-                  label,
-                  data,
-                  borderColor: strokeStyle,
-                  backgroundColor: strokeStyle,
-                  fill: false,
-                  tension: 0.4,
-                  pointRadius: 2,
-                  pointBackgroundColor: strokeStyle
-                }]
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                  x: {
-                    type: 'time',
-                    time: {
-                      unit: 'day',
-                      displayFormats: {
-                        day: 'MMM d, HH:mm'
-                      }
-                    },
-                    ticks: {
-                      maxRotation: 0,
-                      autoSkip: true,
-                      font: { size: 12 }
-                    },
-                    title: {
-                      display: true,
-                      text: 'Time',
-                      font: { size: 16 }
-                    }
-                  },
-                  y: {
-                    beginAtZero: false,
-                    title: { display: true, text: label }
-                  }
-                },
-                plugins: {
-                  title: {
-                    display: true,
-                    text: label,
-                    font: {
-                      size: 30,
-                      weight: 'bold'
-                    },
-                    padding: { top: 10, bottom: 10 }
-                  },
-                  legend: {
-                    display: false
-                  }
-                }
-              }
-            });
-          };
-    
-          const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
-            if (maxVoltage < latestVoltage){
-              maxVoltage = latestVoltage;
-            }
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext('2d');
-            const percent = Math.min(latestVoltage / maxVoltage, 1);
-            const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
-    
-            new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                labels: ['Battery', 'Remaining'],
-                datasets: [{
-                  data: [percent * 100, 100 - percent * 100],
-                  backgroundColor: [color, '#e5e7eb'],
-                  borderWidth: 0
-                }]
-              },
-              options: {
-                responsive: false, // <- important!
-                maintainAspectRatio: false, // <- allows fixed dimensions
-                cutout: '70%',
-                plugins: {
-                  legend: { display: false },
-                  tooltip: {
-                    callbacks: {
-                      label: context => `${context.label}: ${context.raw.toFixed(1)}%`
-                    }
-                  },
-                  title: {
-                    display: true,
-                    text: `Battery: ${latestVoltage.toFixed(2)}V`,
-                    font: { size: 18 }
-                  }
-                }
-              }
-            });
-          };
-    
-          // Step 5: Draw All Charts
-          drawBatteryChart('batteryPercent', parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0));
-
-          drawChart('temperatureChart', "Temperature (ºC)", sensorData["temperature"], "#f97316", true);
-          drawChart('humidityChart', "Humidity (%)", sensorData["humidity"], "#0ea5e9", true);
-          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], "#a855f7");
-          drawChart('LDchart', "LD", sensorData["ld"], "#facc15");
-          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], "#22c55e");
-        })
-        .catch(error => {
-          console.error('❌ Error fetching or processing data:', error);
-        });
-    </script>
-
-
-
-<script>
-  const drawChart = (canvasId, label, data, color, useGradient = false) => {
-      const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext('2d');
-
-      let strokeStyle = color;
-      if (useGradient) {
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#ef4444');
-        gradient.addColorStop(1, '#3b82f6');
-        strokeStyle = gradient;
-      }
-
-      new Chart(canvas, {
-        type: 'line',
-        data: {
-          datasets: [{
+          return {
             label,
             data,
             borderColor: strokeStyle,
@@ -396,102 +154,161 @@
             tension: 0.4,
             pointRadius: 2,
             pointBackgroundColor: strokeStyle
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              type: 'time',
-              time: {
-                unit: 'day',
-                displayFormats: {
-                  day: 'MMM d, HH:mm'
-                }
+          };
+        }) : [{
+          label,
+          data: datasets,
+          borderColor: datasets.color || '#3b82f6',
+          backgroundColor: datasets.color || '#3b82f6',
+          fill: false,
+          tension: 0.4,
+          pointRadius: 2,
+          pointBackgroundColor: datasets.color || '#3b82f6'
+        }];
+    
+        new Chart(ctx, {
+          type: 'line',
+          data: { datasets: formattedDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                type: 'time',
+                time: {
+                  unit: 'day',
+                  displayFormats: { day: 'MMM d, HH:mm' }
+                },
+                ticks: { maxRotation: 0, autoSkip: true, font: { size: 12 } },
+                title: { display: true, text: 'Time', font: { size: 16 } }
               },
-              ticks: {
-                maxRotation: 0,
-                autoSkip: true,
-                font: { size: 12 }
+              y: {
+                beginAtZero: false,
+                title: { display: true, text: label }
+              }
+            },
+            plugins: {
+              title: {
+                display: true,
+                text: label,
+                font: { size: 30, weight: 'bold' },
+                padding: { top: 10, bottom: 10 }
+              },
+              legend: { display: true }
+            }
+          }
+        });
+      };
+    
+      const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
+        if (maxVoltage < latestVoltage) {
+          maxVoltage = latestVoltage;
+        }
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        const percent = Math.min(latestVoltage / maxVoltage, 1);
+        const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
+    
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Battery', 'Remaining'],
+            datasets: [{
+              data: [percent * 100, 100 - percent * 100],
+              backgroundColor: [color, '#e5e7eb'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return context.label + ": " + context.raw.toFixed(1) + "%";
+                  }
+                }
               },
               title: {
                 display: true,
-                text: 'Time',
-                font: { size: 16 }
+                text: "Battery: " + latestVoltage.toFixed(2) + "V",
+                font: { size: 18 }
               }
-            },
-            y: {
-              beginAtZero: false,
-              title: { display: true, text: label }
-            }
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: label,
-              font: {
-                size: 30,
-                weight: 'bold'
-              },
-              padding: { top: 10, bottom: 10 }
-            },
-            legend: {
-              display: false
             }
           }
-        }
-      });
-    };
-
-  fetch("https://script.google.com/macros/s/AKfycbyVt7ckVjdY4MmYsAiMIowGTLqNgQ3LwI-E2S_bRkqWCHDmLNedaX2q1LCyd_SPFw/exec")
-  .then(res => res.json())
-    .then(data => {
-      console.log("Raw API data:", data);
-      console.log ("Sensors:", data.sensors);
-      console.log("Available sensor types:");
-      data.sensors.forEach(s => console.log("Type:", s.sensor_type, "Struct:", s.data_structure_type));
-
-
-      // Get the sensor with temp and humidity (sensor_type 24)
-      const sensor1 = data.sensors.find(s => s.sensor_type === 505 && s.data_structure_type === 14);
-      console.log ("Sensors:", sensor1.data[0]);
-
-      const sensor2 = data.sensors.find(s => s.sensor_type === 3 && s.data_structure_type === 9);
-      console.log ("Sensors:", sensor2.data[0]);
-
-      const sensor = data.sensors.find(s => s.sensor_type === 53 && s.data_structure_type === 7);
-      console.log ("Sensors:", sensor.data[0]);
-      console.log("Sensor data:", sensor.data[0].temp_out);
-      
-
-      if (!sensor || !sensor.data || sensor.data.length === 0) {
-        throw new Error("No valid sensor data found");
-      }
-
-      const tempData = sensor.data.map(d => ({
-          x: new Date(d.ts * 1000),
-          y: d.temp_out
-        }));
-
-        const humData = sensor.data.map(d => ({
-          x: new Date(d.ts * 1000),
-          y: d.hum_out
-        }));
-
-      console.log(tempData);
-
-      drawChart("weatherTempChart", "Temperature (°F)", tempData, "#ef4444", true);
-      drawChart("weatherHumChart", "Humidity (%)", humData, "#3b82f6", true);
-
-
+        });
+      };
     
-      })
-      .catch(err => {
-        console.error("Chart rendering error:", err);
-      });
-
-</script>
+      // Load both local JSON and Google Sheets JSON
+      Promise.all([
+        fetch('data.json').then(res => res.json()),
+        fetch("https://script.google.com/macros/s/AKfycbyVt7ckVjdY4MmYsAiMIowGTLqNgQ3LwI-E2S_bRkqWCHDmLNedaX2q1LCyd_SPFw/exec").then(res => res.json())
+      ])
+        .then(([localData, apiData]) => {
+          const rows = localData.values;
+          const sensorData = {
+            "temperature": [],
+            "humidity": [],
+            "point dendrometer": [],
+            "ld": [],
+            "battery voltage": [],
+            "battery state": []
+          };
+    
+          rows.forEach(([type, epochtime, timestamp, value]) => {
+            const key = type.toLowerCase();
+            const numericValue = parseFloat(value);
+            const time = new Date(parseInt(epochtime) * 1000);
+    
+            if (!isNaN(numericValue) && sensorData[key]) {
+              sensorData[key].push({ x: time, y: numericValue });
+            }
+          });
+    
+          for (const key in sensorData) {
+            sensorData[key].sort((a, b) => a.x - b.x);
+          }
+    
+          const sensor = apiData.sensors.find(s => s.sensor_type === 53 && s.data_structure_type === 7);
+          if (!sensor || !sensor.data || sensor.data.length === 0) {
+            throw new Error("Weather API sensor data not found");
+          }
+    
+          const weatherTemp = sensor.data.map(d => ({
+            x: new Date(d.ts * 1000),
+            y: d.temp_out
+          }));
+    
+          const weatherHum = sensor.data.map(d => ({
+            x: new Date(d.ts * 1000),
+            y: d.hum_out
+          }));
+    
+          drawChart("combinedTempChart", "Temperature (°F)", [
+            { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
+            { label: "Weather API Temperature", data: weatherTemp, color: "#ef4444" }
+          ], true);
+    
+          drawChart("combinedHumChart", "Humidity (%)", [
+            { label: "Local Humidity", data: sensorData["humidity"], color: "#0ea5e9" },
+            { label: "Weather API Humidity", data: weatherHum, color: "#3b82f6" }
+          ], true);
+    
+          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], false);
+          drawChart('LDchart', "LD", sensorData["ld"], false);
+          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], false);
+    
+          const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
+          drawBatteryChart('batteryPercent', latestBatteryVoltage);
+        })
+        .catch(err => {
+          console.error("Error loading or rendering data:", err);
+        });
+    </script>
+    
 
     
 
