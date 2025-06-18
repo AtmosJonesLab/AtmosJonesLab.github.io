@@ -90,6 +90,19 @@
 
   <section id="weather-section">
     <h2 class="section-title">Hoya Harvest Weather Station</h2>
+
+
+    <div class="graph-grid">
+      <div class="chart-wrapper" onclick="toggleExpand(this)">
+        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
+        <canvas id="weatherTempChart"></canvas>
+      </div>
+      <div class="chart-wrapper" onclick="toggleExpand(this)">
+        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
+        <canvas id="wethaerHumChart"></canvas>
+      </div>
+    </div>
+
   
     <div class="chart-grid" id="weatherCards">
       <!-- Weather cards injected by JavaScript -->
@@ -122,8 +135,8 @@
     
     
     
-    <script>
-      fetch('https://script.google.com/macros/s/AKfycbxRrH8FygxXP57qg0hW-aaCNlt7TJHNqb-hG66Fy9MnQ_0DI31wHF-VFtKFyKHFoPY/exec')
+    <!-- <script>
+      fetch('https://script.google.com/macros/s/AKfycbxql6zAFbGYuW6WElwsS5u00Wq534PX_OPcSzSahuwNRM1sO0ISYimGYEoAQikjwco/exec')
         .then(res => res.json())
         .then(data => {
           const w = data.davis_current_observation;
@@ -157,7 +170,8 @@
             `<div class="card"><h4>Error</h4><p>Could not load weather data.</p></div>`;
         });
     </script>
-    
+     -->
+
   
 
 
@@ -354,6 +368,109 @@
           console.error('❌ Error fetching or processing data:', error);
         });
     </script>
+
+<script>
+  fetch("https://script.google.com/macros/s/AKfycbzF7zwR6HQ5Lyu-E6kcBNqsyLZjJpOgEPaeRUNq2-nR6BTQ8-rEoD9VTRyYrkSg5xE/exec")
+  .then(res => res.json())
+  .then(data => {
+    console.log("Raw API data:", data);
+    console.log ("Sensors:", data.sensors);
+    console.log("Available sensor types:");
+    data.sensors.forEach(s => console.log("Type:", s.sensor_type, "Struct:", s.data_structure_type));
+
+
+    // Get the sensor with temp and humidity (sensor_type 24)
+    const sensor1 = data.sensors.find(s => s.sensor_type === 505 && s.data_structure_type === 14);
+    console.log ("Sensors:", sensor1.data[0]);
+
+    const sensor2 = data.sensors.find(s => s.sensor_type === 3 && s.data_structure_type === 9);
+    console.log ("Sensors:", sensor2.data[0]);
+
+    const sensor = data.sensors.find(s => s.sensor_type === 53 && s.data_structure_type === 7);
+    console.log ("Sensors:", sensor.data[0]);
+    
+
+    if (!sensor || !sensor.data || sensor.data.length === 0) {
+      throw new Error("No valid sensor data found");
+    }
+
+    const labels = sensor.data.map(d => new Date(d.ts * 1000).toLocaleString());
+    const tempData = sensor.data.map(d => d.temp_out);
+    const humData = sensor.data.map(d => d.hum_out);
+
+
+      // Chart Drawing
+      // Create Chart.js line chart
+      new Chart(document.getElementById('weatherChart'), {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Temperature (°F)',
+                data: tempData,
+                borderColor: 'tomato',
+                backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                yAxisID: 'y',
+                tension: 0.3,
+                pointRadius: 2
+              },
+              {
+                label: 'Humidity (%)',
+                data: humData,
+                borderColor: 'steelblue',
+                backgroundColor: 'rgba(70,130,180,0.1)',
+                yAxisID: 'y1',
+                tension: 0.3,
+                pointRadius: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            interaction: {
+              mode: 'index',
+              intersect: false
+            },
+            stacked: false,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Temperature and Humidity (Historic Data)'
+              }
+            },
+            scales: {
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                  display: true,
+                  text: 'Temperature (°F)'
+                }
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                  display: true,
+                  text: 'Humidity (%)'
+                },
+                grid: {
+                  drawOnChartArea: false
+                }
+              }
+            }
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Chart rendering error:", err);
+      });
+
+</script>
+
     
 
 </body>
