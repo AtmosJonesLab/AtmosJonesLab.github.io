@@ -274,6 +274,7 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
+          console.log(sensorData["battery voltage"]);
 
           // --- Build local data table ---
           const tableBody = document.querySelector("#sensor-table tbody");
