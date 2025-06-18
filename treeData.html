@@ -120,8 +120,8 @@
       <thead>
         <tr>
           <th>Timestamp</th>
-          <th>Humidity</th>
           <th>Temperature</th>
+          <th>Humidity</th>
           <th>Point Dendrometer</th>
           <th>LD</th>
           <th>Battery State</th>
@@ -297,7 +297,7 @@
               <td>${row["temperature"]?.toFixed(2) ?? "-"}</td>
               <td>${row["point dendrometer"]?.toFixed(2) ?? "-"}</td>
               <td>${row["ld"]?.toFixed(2) ?? "-"}</td>
-              <td>${row["battery state"] ?? "-"}</td>
+              <td>${row["battery state"].toString() ?? "-"}</td>
               <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
             `;
             tableBody.appendChild(tr);
@@ -320,17 +320,17 @@
     
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
-            { label: "Weather API Temperature", data: weatherTemp, color: "#ef4444" }
+            { label: "Weather API Temperature", data: weatherTemp, color: "#3b82f6" }
           ], false);
     
           drawChart("combinedHumChart", "Humidity (%)", [
             { label: "Local Humidity", data: sensorData["humidity"], color: "#0ea5e9" },
-            { label: "Weather API Humidity", data: weatherHum, color: "#3b82f6" }
+            { label: "Weather API Humidity", data: weatherHum, color: "#ef4444" }
           ], false);
     
-          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], false);
-          drawChart('LDchart', "LD", sensorData["ld"], false);
-          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], false);
+          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], "#a855f7");
+          drawChart('LDchart', "LD", sensorData["ld"], "#facc15");
+          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], "#22c55e");
     
           const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
