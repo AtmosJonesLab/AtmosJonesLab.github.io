@@ -297,7 +297,7 @@
               <td>${row["temperature"]?.toFixed(2) ?? "-"}</td>
               <td>${row["point dendrometer"]?.toFixed(2) ?? "-"}</td>
               <td>${row["ld"]?.toFixed(2) ?? "-"}</td>
-              <td>${row["battery state"].toString() ?? "-"}</td>
+              <td>${row["battery state"]?.toString() ?? "-"}</td>
               <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
             `;
             tableBody.appendChild(tr);
