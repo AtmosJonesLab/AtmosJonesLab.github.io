@@ -245,7 +245,7 @@
     
       // Load both local JSON and Google Sheets JSON
       Promise.all([
-        fetch('data.json').then(res => res.json()),
+        fetch('data.json').then(res => res.json()), 
         fetch("https://script.google.com/macros/s/AKfycbyVt7ckVjdY4MmYsAiMIowGTLqNgQ3LwI-E2S_bRkqWCHDmLNedaX2q1LCyd_SPFw/exec").then(res => res.json())
       ])
         .then(([localData, apiData]) => {
@@ -273,45 +273,34 @@
             sensorData[key].sort((a, b) => a.x - b.x);
           }
 
+          // --- Build local data table ---
+          const tableBody = document.querySelector("#sensor-table tbody");
+          const mergedData = {};
 
-          // Build table rows by timestamp
-          if (!tableRowsByTimestamp[epochtime]) {
-              tableRowsByTimestamp[epochtime] = { time: time.toLocaleString() };
-            }
-            tableRowsByTimestamp[epochtime][key] = value;
-          });
-          // Sort all sensor data by timestamp
-          for (const key in sensorData) {
-            sensorData[key].sort((a, b) => a.x - b.x);
-          }
-
-
-          // Step 2: Render HTML Table
-          const tbody = document.querySelector('#sensor-table tbody');
-          for (const [epochtime, sensors] of Object.entries(tableRowsByTimestamp)) {
-            const tr = document.createElement('tr');
-
-            const tdTime = document.createElement('td');
-            tdTime.textContent = sensors.time;
-            tr.appendChild(tdTime);
-
-            const columns = [
-              'humidity',
-              'temperature',
-              'point dendrometer',
-              'ld',
-              'battery state',
-              'battery voltage'
-            ];
-
-            columns.forEach(col => {
-              const td = document.createElement('td');
-              td.textContent = sensors[col] || '-';
-              tr.appendChild(td);
+          // Merge all sensor data by rounded timestamp
+          ["temperature", "humidity", "point dendrometer", "ld", "battery voltage"].forEach(sensor => {
+            sensorData[sensor].forEach(({ x, y }) => {
+              const timestamp = new Date(Math.round(x.getTime() / 60000) * 60000).toISOString(); // Round to nearest min
+              if (!mergedData[timestamp]) mergedData[timestamp] = {};
+              mergedData[timestamp][sensor] = y;
             });
+          });
 
-            tbody.appendChild(tr);
-          }
+          // Sort and populate table
+          Object.keys(mergedData).sort().forEach(ts => {
+            const row = mergedData[ts];
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+              <td>${new Date(ts).toLocaleString()}</td>
+              <td>${row["temperature"]?.toFixed(2) ?? "-"}</td>
+              <td>${row["humidity"]?.toFixed(2) ?? "-"}</td>
+              <td>${row["point dendrometer"]?.toFixed(2) ?? "-"}</td>
+              <td>${row["ld"]?.toFixed(2) ?? "-"}</td>
+              <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
+            `;
+            tableBody.appendChild(tr);
+          });
     
           const sensor = apiData.sensors.find(s => s.sensor_type === 53 && s.data_structure_type === 7);
           if (!sensor || !sensor.data || sensor.data.length === 0) {
