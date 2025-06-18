@@ -30,14 +30,15 @@
   </section>
   <h2>Graphs</h2>
 
+  
   <div class="graph-grid">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id="temperatureChart"></canvas>
+      <canvas id="combinedTempChart" ></canvas>
     </div>
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id="humidityChart"></canvas>
+      <canvas id="combinedHumChart" ></canvas>
     </div>
   </div>
 
