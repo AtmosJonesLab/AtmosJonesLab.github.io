@@ -278,7 +278,7 @@
           const mergedData = {};
 
           // Merge all sensor data by rounded timestamp
-          ["temperature", "humidity", "point dendrometer", "ld", "battery voltage"].forEach(sensor => {
+          ["humidity", "temperature", "point dendrometer", "ld", "battery state", "battery voltage"].forEach(sensor => {
             sensorData[sensor].forEach(({ x, y }) => {
               const timestamp = new Date(Math.round(x.getTime() / 60000) * 60000).toISOString(); // Round to nearest min
               if (!mergedData[timestamp]) mergedData[timestamp] = {};
@@ -293,10 +293,11 @@
 
             tr.innerHTML = `
               <td>${new Date(ts).toLocaleString()}</td>
-              <td>${row["temperature"]?.toFixed(2) ?? "-"}</td>
               <td>${row["humidity"]?.toFixed(2) ?? "-"}</td>
+              <td>${row["temperature"]?.toFixed(2) ?? "-"}</td>
               <td>${row["point dendrometer"]?.toFixed(2) ?? "-"}</td>
               <td>${row["ld"]?.toFixed(2) ?? "-"}</td>
+              <td>${row["battery state"] ?? "-"}</td>
               <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
             `;
             tableBody.appendChild(tr);
