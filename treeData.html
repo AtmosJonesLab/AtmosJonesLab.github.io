@@ -274,7 +274,7 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
-          console.log(sensorData["battery voltage"]);
+          console.log(sensorData["battery state"]);
 
           // --- Build local data table ---
           const tableBody = document.querySelector("#sensor-table tbody");
@@ -325,7 +325,7 @@
             x: new Date(d.ts * 1000),
             y: d.rainfall_mm // Convert from Fahrenheit to Celsius
           }));
-          console.log("Weather Rainfall Data:", weatherRainfall);
+    
     
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
