@@ -244,11 +244,13 @@
       };
     
       // Load both local JSON and Google Sheets JSON
-      Promise.all([
+       Promise.all([
         fetch('./data.json').then(res => res.json()), 
         fetch("https://script.google.com/macros/s/AKfycbyVt7ckVjdY4MmYsAiMIowGTLqNgQ3LwI-E2S_bRkqWCHDmLNedaX2q1LCyd_SPFw/exec").then(res => res.json())
-      ])
+       ])
         .then(([localData, apiData]) => {
+      
+
           const rows = localData.values;
           const sensorData = {
             "temperature": [],
@@ -297,7 +299,7 @@
               <td>${row["temperature"]?.toFixed(2) ?? "-"}</td>
               <td>${row["point dendrometer"]?.toFixed(2) ?? "-"}</td>
               <td>${row["ld"]?.toFixed(2) ?? "-"}</td>
-              <td>${row["battery state"]?.toString() ?? "-"}</td>
+              <td>${row["battery state"] ?? "-"}</td>
               <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
             `;
             tableBody.appendChild(tr);
@@ -317,6 +319,12 @@
             x: new Date(d.ts * 1000),
             y: d.hum_out
           }));
+
+          const weatherRainfall = sensor.data.map(d => ({
+            x: new Date(d.ts * 1000),
+            y: d.rainfall_mm // Convert from Fahrenheit to Celsius
+          }));
+          console.log("Weather Rainfall Data:", weatherRainfall);
     
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
