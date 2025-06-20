@@ -25,7 +25,7 @@ jobs:
     - name: Install node-fetch
       run: npm install node-fetch@2
 
-      - name: Create updateWeather.js script
+    - name: Create updateWeather.js script
       run: |
         mkdir -p .github/scripts
         cat << "EOF" > .github/scripts/updateWeather.js
