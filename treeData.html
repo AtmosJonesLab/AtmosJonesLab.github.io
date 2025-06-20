@@ -253,7 +253,7 @@
       // Load both local JSON and Google Sheets JSON
        Promise.all([
         fetch('./data.json').then(res => res.json()), 
-        fetch("./weather-data.json").then(res => res.json())
+        fetch("./weather_data.json").then(res => res.json())
        ])
         .then(([localData, apiData]) => {
       
