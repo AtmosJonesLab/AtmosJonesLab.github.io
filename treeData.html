@@ -28,7 +28,14 @@
     </p>
 
   </section>
-  <h2>Graphs</h2>
+    <h2>Tree Information</h2>
+    <p><strong>Species:</strong> Sugar Maple (Acer saccharum)</p>
+    <p><strong>Location:</strong> Georgetown University, Washington, D.C.</p>
+    <h2> </h2>
+  <div>
+    <h2>Graphs of Data from the Tree</h2>
+  </div>
+  
 
   
   <div class="graph-grid">
@@ -280,7 +287,7 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
-          console.log(sensorData["battery state"]);
+    
 
           // --- Build local data table ---
           const tableBody = document.querySelector("#sensor-table tbody");
