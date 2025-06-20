@@ -326,21 +326,20 @@
           if (!Array.isArray(apiData) || apiData.length === 0) {
             throw new Error("Weather data is empty or not in expected format");
           }
-    
-          const weatherTemp = sensor.data.map(d => ({
+
+          const weatherTemp = apiData.map(d => ({
             x: new Date(d.ts * 1000),
-            y: (d.temp_out - 32) * 5 / 9 // Convert from Fahrenheit to Celsius
+            y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
           }));
-          console.log("Weather Temp Data:", weatherTemp);
-    
-          const weatherHum = sensor.data.map(d => ({
+
+          const weatherHum = apiData.map(d => ({
             x: new Date(d.ts * 1000),
             y: d.hum_out
           }));
 
-          const weatherRainfall = sensor.data.map(d => ({
+          const weatherRainfall = apiData.map(d => ({
             x: new Date(d.ts * 1000),
-            y: d.rainfall_mm // Convert from Fahrenheit to Celsius
+            y: d.rainfall_mm
           }));
     
     
