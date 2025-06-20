@@ -53,7 +53,7 @@ jobs:
               temp_out: d.temp_out,
               hum_out: d.hum_out,
               rainfall_mm: d.rainfall_mm,
-              solar_rad: d.solar_rad,
+              solar_rad_avg: d.solar_rad_avg,
             }));
 
             const file = fs.existsSync(FILE_PATH)

@@ -105,10 +105,10 @@
         <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
         <canvas id="weatherRainfall"></canvas>
       </div>
-      <!-- <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <div class="chart-wrapper" onclick="toggleExpand(this)">
         <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-        <canvas id="weatherHumChart"></canvas>
-      </div> -->
+        <canvas id="weatherSolar"></canvas>
+      </div>
     </div>
 
   
@@ -341,6 +341,11 @@
             x: new Date(d.ts * 1000),
             y: d.rainfall_mm
           }));
+
+          const weatherSolar = apiData.map(d => ({
+            x: new Date(d.ts * 1000),
+            y: d.solar_rad_avg
+          }));
     
     
           drawChart("combinedTempChart", "Temperature (°C)", [
@@ -370,6 +375,10 @@
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
             { label: "Rainfall", data: weatherRainfall, color: "#0ea5e9" }
+          ]);
+
+          drawChart('weatherSolar', "Solar Radiation (watts per m^2)", [
+            { label: "Solar Radiation", data: weatherSolar, color: "#ffde21" }
           ]);
         })
         .catch(err => {
