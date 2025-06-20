@@ -25,10 +25,10 @@ jobs:
     - name: Install node-fetch
       run: npm install node-fetch@2
 
-    - name: Create updateWeather.js script
+      - name: Create updateWeather.js script
       run: |
         mkdir -p .github/scripts
-        cat << 'EOF' > .github/scripts/updateWeather.js
+        cat << "EOF" > .github/scripts/updateWeather.js
         const fs = require('fs');
         const fetch = require('node-fetch');
 
@@ -49,11 +49,9 @@ jobs:
             }
 
             const newData = sensor.data.map(d => ({
-             ts: d.ts,
-            temp_out: d.temp_out,
-            hum_out: d.hum_out,
-            rainfall_mm: d.rainfall_mm,
-            solar_rad_avg: d.solar_rad_avg,
+              ts: d.ts,
+              temp_out: d.temp_out,
+              hum_out: d.hum_out
             }));
 
             const file = fs.existsSync(FILE_PATH)
@@ -68,7 +66,7 @@ jobs:
             const merged = Object.values(allData).sort((a, b) => a.ts - b.ts);
 
             fs.writeFileSync(FILE_PATH, JSON.stringify(merged, null, 2));
-            console.log(\`Appended \${newData.length} entries.\`);
+            console.log(`Appended ${newData.length} entries.`);
           } catch (err) {
             console.error("Error fetching or updating weather data:", err);
             process.exit(1);
