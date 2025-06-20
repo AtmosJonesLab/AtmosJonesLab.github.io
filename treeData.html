@@ -295,12 +295,16 @@
 
           // Merge all sensor data by rounded timestamp
           ["humidity", "temperature", "point dendrometer", "ld", "battery state", "battery voltage"].forEach(sensor => {
-            sensorData[sensor].forEach(({ x, y }) => {
-              const timestamp = new Date(Math.round(x.getTime() / 60000) * 60000).toISOString(); // Round to nearest min
-              if (!mergedData[timestamp]) mergedData[timestamp] = {};
-              mergedData[timestamp][sensor] = y;
-            });
+          sensorData[sensor].forEach(({ x, y }) => {
+            if (!(x instanceof Date) || isNaN(x)) {
+              console.warn(`Skipping invalid timestamp for ${sensor}:`, x, y);
+              return;
+  }
+            const timestamp = new Date(Math.round(x.getTime() / 60000) * 60000).toISOString();
+            if (!mergedData[timestamp]) mergedData[timestamp] = {};
+            mergedData[timestamp][sensor] = y;
           });
+        });
 
           // Sort and populate table
           Object.keys(mergedData).sort().forEach(ts => {
@@ -327,6 +331,7 @@
             x: new Date(d.ts * 1000),
             y: (d.temp_out - 32) * 5 / 9 // Convert from Fahrenheit to Celsius
           }));
+          console.log("Weather Temp Data:", weatherTemp);
     
           const weatherHum = sensor.data.map(d => ({
             x: new Date(d.ts * 1000),
