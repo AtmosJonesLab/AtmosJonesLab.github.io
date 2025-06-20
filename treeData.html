@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   
   
 </head>
@@ -28,12 +29,34 @@
     </p>
 
   </section>
-    <h2>Tree Information</h2>
-    <p><strong>Species:</strong> Sugar Maple (Acer saccharum)</p>
-    <p><strong>Location:</strong> Georgetown University, Washington, D.C.</p>
-    <h2> </h2>
+    <h2>Map of Data Locations</h2>
+    <div id="map"></div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script>
+      // Initialize the map
+      var map = L.map('map').setView([38.90781, -77.07416], 17); // Set initial view to San Francisco
+    
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+    
+      // Add markers
+      var locations = [
+        { name: "Harbin Sugar Maple", coords: [38.90781, -77.07416] },
+        { name: "Hoya Harvest Garden Weather Station", coords: [38.90940, -77.07490] },
+       
+      ];
+    
+      locations.forEach(function(loc) {
+        L.marker(loc.coords).addTo(map)
+          .bindPopup(loc.name)
+          .openPopup();
+      });
+    </script>
+
   <div>
-    <h2>Graphs of Data from the Tree</h2>
+    <h2>Data from the Sugar Maple</h2>
   </div>
   
 

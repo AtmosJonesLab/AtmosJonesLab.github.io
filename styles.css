@@ -287,5 +287,10 @@ th {
   flex-shrink: 0;
 }
 
+#map {
+  height: 500px;
+  width: 75%;
+}
+
 
     
