@@ -166,5 +166,19 @@
     "hum_out": 61,
     "rainfall_mm": 0,
     "solar_rad_avg": 612
+  },
+  {
+    "ts": 1750431600,
+    "temp_out": 78.1,
+    "hum_out": 55,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 747
+  },
+  {
+    "ts": 1750435200,
+    "temp_out": 80.6,
+    "hum_out": 54,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 857
   }
 ]
