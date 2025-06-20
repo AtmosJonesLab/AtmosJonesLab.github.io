@@ -319,9 +319,8 @@
             tableBody.appendChild(tr);
           });
     
-          const sensor = apiData.sensors.find(s => s.sensor_type === 53 && s.data_structure_type === 7);
-          if (!sensor || !sensor.data || sensor.data.length === 0) {
-            throw new Error("Weather API sensor data not found");
+          if (!Array.isArray(apiData) || apiData.length === 0) {
+            throw new Error("Weather data is empty or not in expected format");
           }
     
           const weatherTemp = sensor.data.map(d => ({
