@@ -51,7 +51,9 @@ jobs:
             const newData = sensor.data.map(d => ({
               ts: d.ts,
               temp_out: d.temp_out,
-              hum_out: d.hum_out
+              hum_out: d.hum_out,
+              rainfall_mm: d.rainfall_mm,
+              solar_rad: d.solar_rad,
             }));
 
             const file = fs.existsSync(FILE_PATH)
