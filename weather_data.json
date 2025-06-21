@@ -180,5 +180,131 @@
     "hum_out": 54,
     "rainfall_mm": 0,
     "solar_rad_avg": 857
+  },
+  {
+    "ts": 1750438800,
+    "temp_out": 83.1,
+    "hum_out": 52,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 925
+  },
+  {
+    "ts": 1750442400,
+    "temp_out": 84.6,
+    "hum_out": 52,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 807
+  },
+  {
+    "ts": 1750446000,
+    "temp_out": 85.7,
+    "hum_out": 48,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 847
+  },
+  {
+    "ts": 1750449600,
+    "temp_out": 86.9,
+    "hum_out": 46,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 500
+  },
+  {
+    "ts": 1750453200,
+    "temp_out": 87.2,
+    "hum_out": 45,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 463
+  },
+  {
+    "ts": 1750456800,
+    "temp_out": 85,
+    "hum_out": 54,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 146
+  },
+  {
+    "ts": 1750460400,
+    "temp_out": 83.8,
+    "hum_out": 56,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 180
+  },
+  {
+    "ts": 1750464000,
+    "temp_out": 83.2,
+    "hum_out": 59,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 55
+  },
+  {
+    "ts": 1750467600,
+    "temp_out": 82,
+    "hum_out": 62,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 7
+  },
+  {
+    "ts": 1750471200,
+    "temp_out": 80.8,
+    "hum_out": 65,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750474800,
+    "temp_out": 79.5,
+    "hum_out": 66,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750478400,
+    "temp_out": 78,
+    "hum_out": 69,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750482000,
+    "temp_out": 77.1,
+    "hum_out": 70,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750485600,
+    "temp_out": 76.4,
+    "hum_out": 72,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750489200,
+    "temp_out": 74.9,
+    "hum_out": 77,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750492800,
+    "temp_out": 72.9,
+    "hum_out": 83,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750496400,
+    "temp_out": 71.5,
+    "hum_out": 84,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1750500000,
+    "temp_out": 71.1,
+    "hum_out": 85,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 3
   }
 ]
