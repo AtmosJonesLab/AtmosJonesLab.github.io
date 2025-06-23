@@ -315,18 +315,7 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
-          // const fs = require('fs');
-          // const fetch = require('node-fetch');
-
-          const json = JSON.stringify(sensorData);
-          console.log(json);
-          // fs.appendFile('prettydata.json', json, (err) => {
-          // if (err) {
-          //   console.error('Error writing file:', err);
-          // } else {
-          //   console.log('File written successfully!');
-          // }
-          // });
+       
         
 
           // --- Build local data table ---

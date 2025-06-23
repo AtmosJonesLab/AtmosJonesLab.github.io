@@ -47,7 +47,40 @@ jobs:
               throw new Error(`HTTP ${res.status}: ${errorDetails}`);
             }
             const json = await res.json();
+            const rows = json.values;
+
+            const sensorData = {
+              "temperature": [],
+              "humidity": [],
+              "point dendrometer": [],
+              "ld": [],
+              "battery state": [],
+              "battery voltage": []
+            };
+
+            rows.forEach(([type, epochtime, timestamp, value]) => {
+              const key = type.toLowerCase();
+              const time = new Date(parseInt(epochtime) * 1000);
+
+              if (!sensorData[key]) return;
+
+              if (key === "battery state") {
+                sensorData[key].push({ x: time, y: value }); // string values
+              } else {
+                const numericValue = parseFloat(value);
+                if (!isNaN(numericValue)) {
+                  sensorData[key].push({ x: time, y: numericValue });
+                }
+              }
+            });
+
+            // Sort all arrays by time
+            for (const key in sensorData) {
+              sensorData[key].sort((a, b) => a.x - b.x);
+            }
+
             fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
+            fs.writeFileSync('prettydata.json', JSON.stringify(prettyjson, null, 2));
             console.log('✅ Successfully updated data.json');
           } catch (err) {
             console.error(`❌ Failed to fetch data from ${url}:`, err.message);
