@@ -315,7 +315,8 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
-
+          const fs = require('fs');
+          const fetch = require('node-fetch');
 
           const json = JSON.stringify(sensorData);
           fs.writeFileSync('prettydata.json', json);
