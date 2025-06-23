@@ -80,7 +80,7 @@ jobs:
             }
 
             fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
-            fs.writeFileSync('prettydata.json', JSON.stringify(prettyjson, null, 2));
+            fs.writeFileSync('prettydata.json', JSON.stringify(sensorData, null, 2));
             console.log('✅ Successfully updated data.json');
           } catch (err) {
             console.error(`❌ Failed to fetch data from ${url}:`, err.message);
