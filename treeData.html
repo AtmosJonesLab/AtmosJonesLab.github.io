@@ -315,6 +315,10 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
+
+
+          const json = JSON.stringify(sensorData);
+          fs.writeFileSync('prettydata.json', json);
     
 
           // --- Build local data table ---
