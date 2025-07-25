@@ -408,7 +408,7 @@
       // Add sapflow datasets
       sapflowIndices.forEach(({ label, index }, i) => {
         const data = dataRows.map(row => ({
-          x: row[timestampIndex],
+          x: new Date(row[timestampIndex]),
           y: parseFloat(row[index])
         })).filter(point => !isNaN(point.y));
 
@@ -416,7 +416,7 @@
           label,
           data,
           color: colors[i],
-          
+          // yAxisID: 'y'
         });
       });
 
