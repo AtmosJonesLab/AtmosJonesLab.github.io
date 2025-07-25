@@ -41,7 +41,7 @@ jobs:
 
           const run = async () => {
           try {
-            const res = await fetch(url);
+            const res = await fetch(url.replace(' ', '%20'));
             if (!res.ok) {
               const errorDetails = await res.text();
               throw new Error(`HTTP ${res.status}: ${errorDetails}`);
