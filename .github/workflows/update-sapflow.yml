@@ -1,0 +1,103 @@
+name: Update Google Sheet Data Daily
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  schedule:
+    - cron: '0 10 * * *' 
+  workflow_dispatch:
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create fetch script and install dependencies
+        run: |
+          # Create package.json with node-fetch dependency
+          echo '{ "type": "module", "dependencies": { "node-fetch": "^3.3.2" } }' > package.json
+
+          npm install
+
+          # Write the fetch script
+          cat <<'EOF' > fetch-data.mjs
+          import fetch from 'node-fetch';
+          import fs from 'fs';
+
+          const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA';
+          const SHEET_ID = '1gxxpepYDBFPydDFCylXE5EUx8XjXJB992g6NmMUaG0U';
+          const RANGE = 'sapflow!A1:J';
+
+          const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+          const run = async () => {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) {
+              const errorDetails = await res.text();
+              throw new Error(`HTTP ${res.status}: ${errorDetails}`);
+            }
+            const json = await res.json();
+            const rows = json.values;
+
+            const headers = rows[0];
+
+            const sapData = {};
+            headers.forEach(header => {
+              sapData[header] = [];
+            });
+
+            for (let i = 1; i < rows.length; i++) {
+              const row = rows[i];
+              headers.forEach((header, index) => {
+                sapData[header].push(row[index] !== undefined ? row[index] : null);
+              });
+            }
+
+            // Sort all arrays by time
+            for (const key in sapData) {
+              sapData[key].sort((a, b) => a.x - b.x);
+            }
+
+            fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
+            fs.writeFileSync('prettydata.json', JSON.stringify(sensorData, null, 2));
+            console.log('✅ Successfully updated data.json');
+          } catch (err) {
+            console.error(`❌ Failed to fetch data from ${url}:`, err.message);
+            if (err.response) {
+              console.error('Response details:', err.response.data);
+              }
+            process.exit(1);
+            }
+          };
+          run();
+          EOF
+
+          # Run the script
+          node fetch-data.mjs
+        env:
+          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
+          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+          
+      - name: Commit and push changes
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add sapData.json
+          git commit -m "Update sapData.json from Google Sheets" || echo "No changes to commit"
+          git config --unset-all credential.helper || true
+          git remote set-url origin https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git remote -v
+          echo "PAT length: ${#PERSONAL_ACCESS_TOKEN}"
+          git push
