@@ -296,6 +296,8 @@
         fetch("./sapData.json").then(res => res.json())
        ])
         .then(([localData, apiData, sapData]) => {
+          
+          console.log("Sap Data:", sapData);
       
 
           const rows = localData.values;
@@ -390,7 +392,7 @@
           }));
 
 //--------------------build sapflow dataset--------------------
-          const headers = sapData.values[0];
+      const headers = sapData.values[0];
       const dataRows = sapData.values.slice(1);
 
       const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b']; // sapflow0–3
