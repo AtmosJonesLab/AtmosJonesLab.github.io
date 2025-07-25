@@ -37,7 +37,7 @@ jobs:
           const SHEET_ID = '1gxxpepYDBFPydDFCylXE5EUx8XjXJB992g6NmMUaG0U';
           const RANGE = 'sapflow!A1:J';
 
-          const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+          const url = 'https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}';
 
           const run = async () => {
           try {
