@@ -37,7 +37,7 @@ jobs:
           const SHEET_ID = '1gxxpepYDBFPydDFCylXE5EUx8XjXJB992g6NmMUaG0U';
           const RANGE = 'sapflow!A1:J';
 
-          const url = 'https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}';
+          const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
           const run = async () => {
           try {
@@ -86,7 +86,7 @@ jobs:
           node fetch-data.mjs
         env:
           API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
-          SHEET_ID: 1ik-hGF90uWHn2UCbzIJIQO_qhCTvhT1YTB4KH1C9-xQ
+          SHEET_ID: 1gxxpepYDBFPydDFCylXE5EUx8XjXJB992g6NmMUaG0U
           
       - name: Commit and push changes
         env:
