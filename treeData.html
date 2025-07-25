@@ -230,13 +230,7 @@
               y: {
                 beginAtZero: false,
                 title: { display: true, text: label }
-              },
-              y1: {
-                type: 'linear',
-                position: 'right',
-                grid: { drawOnChartArea: false }, // prevent gridlines from overlapping
-                title: { display: true, text: 'Pulse Number' }
-
+              }
   }
             },
             plugins: {
@@ -394,7 +388,7 @@
             y: d.solar_rad_avg
           }));
 
-
+//--------------------build sapflow weather chart--------------------
           const headers = sapData.values[0]; // First row = column headers
           const dataRows = sapData.values.slice(1); // Skip header
 
