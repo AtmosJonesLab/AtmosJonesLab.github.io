@@ -232,12 +232,6 @@
             position: 'left',
             title: { display: true, text: 'Sapflow' }
           },
-          y1: {
-            type: 'linear',
-            position: 'right',
-            grid: { drawOnChartArea: false },
-            title: { display: true, text: 'Pulse Number' }
-          }
         },
 
             plugins: {
@@ -396,44 +390,35 @@
           }));
 
 //--------------------build sapflow dataset--------------------
-          const headers = sapData.values[0]; // First row = column headers
-          const dataRows = sapData.values.slice(1); // Skip header
+          const headers = sapData.values[0];
+      const dataRows = sapData.values.slice(1);
 
-          const datasets = [];
-          const timestampIndex = headers.indexOf("Timestamp");
-          const pulseIndex = headers.indexOf("1");
-          const sapflowIndices = ["sapflow0", "sapflow1", "sapflow2", "sapflow3"].map(label => ({
-            label,
-            index: headers.indexOf(label)
-          }));
+      const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b']; // sapflow0–3
+      const timestampIndex = headers.indexOf("Timestamp");
+      const pulseIndex = headers.indexOf("1");
+      const sapflowIndices = ["sapflow0", "sapflow1", "sapflow2", "sapflow3"].map(label => ({
+        label,
+        index: headers.indexOf(label)
+      }));
 
-          const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b']; // sapflow0–3
+      const datasets = [];
 
-          sapflowIndices.forEach(({ label, index }, i) => {
-          const data = dataRows.map(row => ({
-            x: row[timestampIndex],
-            y: parseFloat(row[index])
-          })).filter(point => !isNaN(point.y));
-
-          datasets.push({
-            label,
-            data,
-            color: colors[i],
-            yAxisID: 'y' // primary axis
-          });
-        });
-
-        const pulseData = dataRows.map(row => ({
+      // Add sapflow datasets
+      sapflowIndices.forEach(({ label, index }, i) => {
+        const data = dataRows.map(row => ({
           x: row[timestampIndex],
-          y: parseFloat(row[pulseIndex])
+          y: parseFloat(row[index])
         })).filter(point => !isNaN(point.y));
 
         datasets.push({
-          label: 'Pulse Number',
-          data: pulseData,
-          color: '#6366f1',
-          yAxisID: 'y1' // secondary axis
+          label,
+          data,
+          color: colors[i],
+          yAxisID: 'y'
         });
+      });
+
+
 
 
       //--------------------draw charts--------------------
