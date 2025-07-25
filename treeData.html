@@ -224,7 +224,7 @@
               unit: 'minute',
               displayFormats: { minute: 'MMM d, HH:mm' }
             },
-            ticks: { maxRotation: 45, autoSkip: true, font: { size: 12 } },
+            ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
             title: { display: true, text: 'Time', font: { size: 16 } }
           },
           y: {
@@ -426,7 +426,7 @@
 
       //--------------------draw charts--------------------
 
-          drawChart("sapflowchart", "Sap Flow Sensors", datasets, false);
+          drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
 
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
