@@ -396,8 +396,8 @@
       const dataRows = sapData.values.slice(1);
 
       const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b']; // sapflow0–3
-      const timestampIndex = headers.indexOf("Timestamp");
-      const pulseIndex = headers.indexOf("1");
+      const timestampIndex = headers.indexOf("timestamp");
+      const pulseIndex = headers.indexOf("pulsenumber");
       const sapflowIndices = ["sapflow0", "sapflow1", "sapflow2", "sapflow3"].map(label => ({
         label,
         index: headers.indexOf(label)
