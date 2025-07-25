@@ -68,10 +68,10 @@ jobs:
               sapData[key].sort((a, b) => a.x - b.x);
             }
 
-            fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
-            fs.writeFileSync('prettydata.json', JSON.stringify(sensorData, null, 2));
-            console.log('✅ Successfully updated data.json');
+            fs.writeFileSync('sapData.json', JSON.stringify(json, null, 2));
+            console.log('✅ Successfully updated sapData.json');
           } catch (err) {
+            console.log(err);
             console.error(`❌ Failed to fetch data from ${url}:`, err.message);
             if (err.response) {
               console.error('Response details:', err.response.data);
