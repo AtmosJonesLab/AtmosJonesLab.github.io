@@ -297,8 +297,7 @@
        ])
         .then(([localData, apiData, sapData]) => {
           
-          // console.log("Sap Data:", sapData);
-      
+    
 
           const rows = localData.values;
 
@@ -341,7 +340,7 @@
           ["humidity", "temperature", "point dendrometer", "ld", "battery state", "battery voltage"].forEach(sensor => {
           sensorData[sensor].forEach(({ x, y }) => {
             if (!(x instanceof Date) || isNaN(x)) {
-              console.warn(`Skipping invalid timestamp for ${sensor}:`, x, y);
+              // console.warn(`Skipping invalid timestamp for ${sensor}:`, x, y);
               return;
   }
             const timestamp = new Date(Math.round(x.getTime() / 60000) * 60000).toISOString();
