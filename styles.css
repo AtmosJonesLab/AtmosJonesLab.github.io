@@ -87,16 +87,22 @@ section {
 
 /* Cards */
 .card {
+  display: block;
   background-color: var(--surface);
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   padding: 2rem;
   margin-bottom: 2rem;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.05); /* Divider-like effect */
 }
 
 .card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
 }
 
 .card h4 {
@@ -105,12 +111,17 @@ section {
   font-size: 1.25rem;
 }
 
-.card a {
+.card p {
+  margin: 0;
+}
+
+.card nav span {
   color: var(--accent);
   font-weight: 600;
   display: inline-block;
   margin-top: 0.5rem;
 }
+
 
 /* Footer */
 footer {
