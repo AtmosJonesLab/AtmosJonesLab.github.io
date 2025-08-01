@@ -87,12 +87,12 @@
 
 
  <!-- PLACEHOLDER FOR SAPFLOW CHART -->
-  <div class="graph-grid">
+  <!-- <div class="graph-grid">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
       <canvas id='sapflowchart' ></canvas>
     </div>
-  </div>
+  </div> -->
 
   <div class="graph-grid">
     
@@ -459,7 +459,7 @@
             { label: "Solar Radiation", data: weatherSolar, color: "#ffde21" }
           ]);
 
-          drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
+          // drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
 
         })
         .catch(err => {
