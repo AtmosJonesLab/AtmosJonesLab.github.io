@@ -423,8 +423,7 @@
 
       //--------------------draw charts--------------------
 
-          drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
-
+         
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
             { label: "Weather API Temperature", data: weatherTemp, color: "#3b82f6" }
@@ -457,6 +456,9 @@
           drawChart('weatherSolar', "Solar Radiation (watts per square meter)", [
             { label: "Solar Radiation", data: weatherSolar, color: "#ffde21" }
           ]);
+          
+          drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
+
         })
         .catch(err => {
           console.error("Error loading or rendering data:", err);
