@@ -56,17 +56,39 @@ jobs:
               sapData[header] = [];
             });
 
+            const timeColIdx = 0;
+
+            const isValidDate = ts => {
+            const d = new Date(ts);
+              // filter out unparsable dates (NaN) and any before 1970
+            return !isNaN(d) && d.getFullYear() >= 1970;
+            };
             for (let i = 1; i < rows.length; i++) {
               const row = rows[i];
-              headers.forEach((header, index) => {
-                sapData[header].push(row[index] !== undefined ? row[index] : null);
+              const rawTime = row[timeColIdx];
+
+              if (!isValidDate(rawTime)) {
+                // skip this entire row
+                console.warn(`Skipping row ${i} with invalid date: ${rawTime}`);
+                continue;
+              }
+
+
+              headers.forEach((header, idx) => {
+                sapData[header].push(row[idx] != null ? row[idx] : null);
               });
             }
 
-            // Sort all arrays by time
+            const times = sapData.x.map(v => new Date(v).getTime());
+            const sortedIdx = times
+                .map((t, i) => [t, i])
+                .sort((a, b) => a[0] - b[0])
+                .map(pair => pair[1]);
+
             for (const key in sapData) {
-              sapData[key].sort((a, b) => a.x - b.x);
+              sapData[key] = sortedIdx.map(i => sapData[key][i]);
             }
+
 
             fs.writeFileSync('sapData.json', JSON.stringify(json, null, 2));
             console.log('✅ Successfully updated sapData.json');
