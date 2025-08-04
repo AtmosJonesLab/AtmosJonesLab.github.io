@@ -293,9 +293,9 @@
        Promise.all([
         fetch('./data.json').then(res => res.json()), 
         fetch("./weather_data.json").then(res => res.json()),
-        fetch("./sapData.json").then(res => res.json())
+        // fetch("./sapData.json").then(res => res.json())
        ])
-        .then(([localData, apiData, sapData]) => {
+        .then(([localData, apiData]) => {
           
     
 
@@ -393,33 +393,33 @@
           }));
 
 //--------------------build sapflow dataset--------------------
-      const headers = sapData.values[0];
-      const dataRows = sapData.values.slice(1);
+      // const headers = sapData.values[0];
+      // const dataRows = sapData.values.slice(1);
 
-      const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b']; // sapflow0–3
-      const timestampIndex = headers.indexOf("timestamp");
-      const pulseIndex = headers.indexOf("pulsenumber");
-      const sapflowIndices = ["sapflow0", "sapflow1", "sapflow2", "sapflow3"].map(label => ({
-        label,
-        index: headers.indexOf(label)
-      }));
+      // const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b']; // sapflow0–3
+      // const timestampIndex = headers.indexOf("timestamp");
+      // const pulseIndex = headers.indexOf("pulsenumber");
+      // const sapflowIndices = ["sapflow0", "sapflow1", "sapflow2", "sapflow3"].map(label => ({
+      //   label,
+      //   index: headers.indexOf(label)
+      // }));
 
-      const datasets = [];
+      // const datasets = [];
 
-      // Add sapflow datasets
-      sapflowIndices.forEach(({ label, index }, i) => {
-        const data = dataRows.map(row => ({
-          x: new Date(row[timestampIndex]),
-          y: parseFloat(row[index])
-        })).filter(point => !isNaN(point.y));
+      // // Add sapflow datasets
+      // sapflowIndices.forEach(({ label, index }, i) => {
+      //   const data = dataRows.map(row => ({
+      //     x: new Date(row[timestampIndex]),
+      //     y: parseFloat(row[index])
+      //   })).filter(point => !isNaN(point.y));
 
-        datasets.push({
-          label,
-          data,
-          color: colors[i],
-          // yAxisID: 'y'
-        });
-      });
+      //   datasets.push({
+      //     label,
+      //     data,
+      //     color: colors[i],
+      //     // yAxisID: 'y'
+      //   });
+      // });
 
 
 
