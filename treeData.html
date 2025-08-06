@@ -58,6 +58,24 @@
       });
     </script>
 
+    <section class="carousel-section">
+  <div class="carousel">
+    <button class="carousel-btn prev">‹</button>
+
+    <div class="carousel-track-container">
+      <ul class="carousel-track">
+        <li class="carousel-slide"><img src="treephotos/IMG_3620.jpeg" alt="Image 1"></li>
+        <li class="carousel-slide"><img src="treephotos/IMG_3613.jpeg" alt="Image 2"></li>
+        <li class="carousel-slide"><img src="treephotos/IMG_3615.jpeg" alt="Image 3"></li>
+        <li class="carousel-slide"><img src="treephotos/IMG_3619.jpeg" alt="Image 4"></li>
+        <li class="carousel-slide"><img src="treephotos/IMG_3610.jpeg" alt="Image 5"></li>
+      </ul>
+    </div>
+
+    <button class="carousel-btn next">›</button>
+  </div>
+</section>
+
 <section id="weather-section">
   <h2 class="section-title">Data from Harbin Sugar Maple</h2>
   
@@ -150,6 +168,8 @@
    
     <p class="footer" id="weatherFooter"></p>
   </section>
+
+  
   
 
   
@@ -466,9 +486,48 @@
           console.error("Error loading or rendering data:", err);
         });
     </script>
-    
 
-    
+
+<!-- ----------------Carousel Section ---------------- -->
+<script>
+  const track = document.querySelector('.carousel-track');
+  const slides = Array.from(track.children);
+  const nextButton = document.querySelector('.carousel-btn.next');
+  const prevButton = document.querySelector('.carousel-btn.prev');
+
+  let currentIndex = 0;
+
+  function getSlidesPerView() {
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 768) return 2;
+    if (window.innerWidth <= 1024) return 3;
+    return 4;
+  }
+
+  function updateCarousel() {
+    const slideWidth = slides[0].getBoundingClientRect().width;
+    const slidesPerView = getSlidesPerView();
+    const totalSlides = slides.length;
+    const maxIndex = Math.ceil(totalSlides / slidesPerView) - 1;
+
+    currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+    track.style.transform = `translateX(-${slideWidth * slidesPerView * currentIndex}px)`;
+  }
+
+  nextButton.addEventListener('click', () => {
+    currentIndex++;
+    updateCarousel();
+  });
+
+  prevButton.addEventListener('click', () => {
+    currentIndex--;
+    updateCarousel();
+  });
+
+  window.addEventListener('resize', updateCarousel);
+  window.addEventListener('load', updateCarousel);
+</script>
+
 
 </body>
 </html>

@@ -402,3 +402,82 @@ th {
     height: 80px;
   }
 }
+
+
+.carousel-section {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-track-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+  flex: 0 0 25%; /* Show 4 images at once */
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(15, 23, 42, 0.6);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.carousel-btn:hover {
+  background-color: var(--accent);
+}
+
+.carousel-btn.prev {
+  left: 10px;
+}
+
+.carousel-btn.next {
+  right: 10px;
+}
+
+@media (max-width: 1024px) {
+  .carousel-slide {
+    flex: 0 0 33.333%; /* 3 per view */
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-slide {
+    flex: 0 0 50%; /* 2 per view */
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-slide {
+    flex: 0 0 100%; /* 1 per view */
+  }
+}
