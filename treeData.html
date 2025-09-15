@@ -356,7 +356,10 @@
           }
           
         
-          const recentData = sensorData.slice(-1000);
+          const recentData = {};
+          for (const key in sensorData) {
+            recentData[key] = sensorData[key].slice(-1000);
+          }
           console.log(recentData);
 
           // --- Build local data table ---
