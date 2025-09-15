@@ -391,7 +391,7 @@
               <td>${row["battery state"] ?? "-"}</td>
               <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
             `;
-            tableBody.prependChild(tr);
+            tableBody.prepend(tr);
           });
     //--------------------build api weather dataset--------------------
           if (!Array.isArray(apiData) || apiData.length === 0) {
