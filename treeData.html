@@ -400,35 +400,39 @@
             throw new Error("Weather data is empty or not in expected format");
           }
 
-          const weatherTemp = apiData.map(d => ({
-            x: new Date(d.ts * 1000),
-            y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
-          }));
-          recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
+          const weatherTemp = apiData
+            .filter(d => d.temp_out !== null && d.temp_out !== undefined && d.temp_out !== '' && !isNaN(d.temp_out))
+            .map(d => ({
+              x: new Date(d.ts * 1000),
+              y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
+            }));
+          recentWeatherTemp = weatherTemp.slice(-1000);
 
-          const weatherHum = apiData.map(d => ({
-            x: new Date(d.ts * 1000),
-            y: d.hum_out
-          }));
-          recentWeatherHum = weatherHum[weatherHum.length - 1000];
+          const weatherHum = apiData
+            .filter(d => d.hum_out !== null && d.hum_out !== undefined && d.hum_out !== '' && !isNaN(d.hum_out))
+            .map(d => ({
+              x: new Date(d.ts * 1000),
+              y: d.hum_out
+            }));
+          recentWeatherHum = weatherHum.slice(-1000);
 
-          const weatherRainfall = apiData.map(d => ({
-            x: new Date(d.ts * 1000),
-            y: d.rainfall_mm
-          }));
-          recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
+          const weatherRainfall = apiData
+            .filter(d => d.rainfall_mm !== null && d.rainfall_mm !== undefined && d.rainfall_mm !== '' && !isNaN(d.rainfall_mm))
+            .map(d => ({
+              x: new Date(d.ts * 1000),
+              y: d.rainfall_mm
+            }));
+          recentWeatherRainfall = weatherRainfall.slice(-1000);
 
-          const weatherSolar = apiData.map(d => ({
-            x: new Date(d.ts * 1000),
-            y: d.solar_rad_avg
-          }));
-          recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
+          const weatherSolar = apiData
+            .filter(d => d.solar_rad_avg !== null && d.solar_rad_avg !== undefined && d.solar_rad_avg !== '' && !isNaN(d.solar_rad_avg))
+            .map(d => ({
+              x: new Date(d.ts * 1000),
+              y: d.solar_rad_avg
+            }));
+          recentWeatherSolar = weatherSolar.slice(-1000);
 
-          console.log(recentWeatherTemp);
-          console.log(recentWeatherHum);
-          console.log(recentWeatherRainfall);
-          console.log(recentWeatherSolar);
-
+          
 //--------------------build sapflow dataset--------------------
       // const headers = sapData.values[0];
       // const dataRows = sapData.values.slice(1);
