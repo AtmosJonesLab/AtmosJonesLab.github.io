@@ -358,7 +358,9 @@
         
           const recentData = {};
           for (const key in sensorData) {
-            recentData[key] = sensorData[key].slice(-1000);
+            if (key != batteryVoltage){
+              recentData[key] = sensorData[key].slice(-1000);
+            }
           }
           console.log(recentData);
 
@@ -490,7 +492,7 @@
             { label: "Battery Voltage", data: recentData["battery voltage"], color: "#22c55e" }
           ]);
 
-          const latestBatteryVoltage = parseFloat(recentData["battery voltage"]?.y || 0);
+          const latestBatteryVoltage = parseFloat(sensorData["battery voltage"]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
