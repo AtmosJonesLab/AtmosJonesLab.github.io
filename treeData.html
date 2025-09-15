@@ -354,10 +354,11 @@
           for (const key in sensorData) {
             sensorData[key].sort((a, b) => a.x - b.x);
           }
-
-
-       
-        
+          
+        const recentData = {};
+          for (const key in sensorData) {
+            recentData[key] = sensorData[key].slice(-200)[0];
+          }
 
           // --- Build local data table ---
           const tableBody = document.querySelector("#sensor-table tbody");
@@ -390,7 +391,7 @@
               <td>${row["battery state"] ?? "-"}</td>
               <td>${row["battery voltage"]?.toFixed(2) ?? "-"}</td>
             `;
-            tableBody.appendChild(tr);
+            tableBody.prependChild(tr);
           });
     //--------------------build api weather dataset--------------------
           if (!Array.isArray(apiData) || apiData.length === 0) {
@@ -452,28 +453,28 @@
 
          
           drawChart("combinedTempChart", "Temperature (°C)", [
-            { label: "Local Temperature", data: sensorData["temperature"], color: "#f97316" },
+            { label: "Local Temperature", data: recentData["temperature"], color: "#f97316" },
             { label: "Weather API Temperature", data: weatherTemp, color: "#3b82f6" }
           ], false);
     
           drawChart("combinedHumChart", "Humidity (%)", [
-            { label: "Local Humidity", data: sensorData["humidity"], color: "#0ea5e9" },
+            { label: "Local Humidity", data: recentData["humidity"], color: "#0ea5e9" },
             { label: "Weather API Humidity", data: weatherHum, color: "#ef4444" }
           ], false);
     
           drawChart('pdendrochart', "Point Dendrometer (µm)", [
-            { label: "Point Dendrometer", data: sensorData["point dendrometer"], color: "#a855f7" }
+            { label: "Point Dendrometer", data: recentData["point dendrometer"], color: "#a855f7" }
           ]);
 
           drawChart('LDchart', "LD", [
-            { label: "LD", data: sensorData["ld"], color: "#facc15" }
+            { label: "LD", data: recentData["ld"], color: "#facc15" }
           ]);
 
           drawChart('batteryChart', "Battery Voltage", [
-            { label: "Battery Voltage", data: sensorData["battery voltage"], color: "#22c55e" }
+            { label: "Battery Voltage", data: recentData["battery voltage"], color: "#22c55e" }
           ]);
-    
-          const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
+
+          const latestBatteryVoltage = parseFloat(recentData["battery voltage"]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
