@@ -359,7 +359,7 @@
           for (const key in sensorData) {
             recentData[key] = sensorData[key].slice(-200)[0];
           }
-          println(recentData);
+          console.log(recentData);
 
           // --- Build local data table ---
           const tableBody = document.querySelector("#sensor-table tbody");
@@ -423,10 +423,10 @@
           }));
           recentWeatherSolar = weatherSolar[weatherSolar.length - 200];
 
-          println(recentWeatherTemp);
-          println(recentWeatherHum);
-          println(recentWeatherRainfall);
-          println(recentWeatherSolar);
+          console.log(recentWeatherTemp);
+          console.log(recentWeatherHum);
+          console.log(recentWeatherRainfall);
+          console.log(recentWeatherSolar);
 
 //--------------------build sapflow dataset--------------------
       // const headers = sapData.values[0];
