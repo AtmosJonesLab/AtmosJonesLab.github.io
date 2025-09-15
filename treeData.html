@@ -402,21 +402,25 @@
             x: new Date(d.ts * 1000),
             y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
           }));
+          recentWeatherTemp = weatherTemp[weatherTemp.length - 200];
 
           const weatherHum = apiData.map(d => ({
             x: new Date(d.ts * 1000),
             y: d.hum_out
           }));
+          recentWeatherHum = weatherHum[weatherHum.length - 200];
 
           const weatherRainfall = apiData.map(d => ({
             x: new Date(d.ts * 1000),
             y: d.rainfall_mm
           }));
+          recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 200];
 
           const weatherSolar = apiData.map(d => ({
             x: new Date(d.ts * 1000),
             y: d.solar_rad_avg
           }));
+          recentWeatherSolar = weatherSolar[weatherSolar.length - 200];
 
 //--------------------build sapflow dataset--------------------
       // const headers = sapData.values[0];
@@ -454,12 +458,12 @@
          
           drawChart("combinedTempChart", "Temperature (°C)", [
             { label: "Local Temperature", data: recentData["temperature"], color: "#f97316" },
-            { label: "Weather API Temperature", data: weatherTemp, color: "#3b82f6" }
+            { label: "Weather API Temperature", data: recentWeatherTemp, color: "#3b82f6" }
           ], false);
     
           drawChart("combinedHumChart", "Humidity (%)", [
             { label: "Local Humidity", data: recentData["humidity"], color: "#0ea5e9" },
-            { label: "Weather API Humidity", data: weatherHum, color: "#ef4444" }
+            { label: "Weather API Humidity", data: recentWeatherHum, color: "#ef4444" }
           ], false);
     
           drawChart('pdendrochart', "Point Dendrometer (µm)", [
@@ -478,11 +482,11 @@
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
-            { label: "Rainfall", data: weatherRainfall, color: "#0ea5e9" }
+            { label: "Rainfall", data: recentWeatherRainfall, color: "#0ea5e9" }
           ]);
 
           drawChart('weatherSolar', "Solar Radiation (watts per square meter)", [
-            { label: "Solar Radiation", data: weatherSolar, color: "#ffde21" }
+            { label: "Solar Radiation", data: recentWeatherSolar, color: "#ffde21" }
           ]);
 
           // drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
