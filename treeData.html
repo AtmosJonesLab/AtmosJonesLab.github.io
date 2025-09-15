@@ -358,9 +358,7 @@
         
           const recentData = {};
           for (const key in sensorData) {
-            if (key != "battery voltage"){
-              recentData[key] = sensorData[key].slice(-1000);
-            }
+            recentData[key] = sensorData[key].slice(-1000);
           }
           console.log(recentData);
 
