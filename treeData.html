@@ -402,24 +402,24 @@
           //   }));
           // recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
 
-          function cleanWeatherData(data, key, convert = null) {
-  return data
-    .filter(d => d && d[key] !== null && d[key] !== undefined && d[key] !== '' && !isNaN(Number(d[key])))
-    .map(d => ({
-      x: new Date(d.ts * 1000),
-      y: convert ? convert(d[key]) : Number(d[key])
-    }));
-}
+         function cleanWeatherData(data, key, convert = v => v) {
+          return data
+            .filter(d => d && d[key] !== null && d[key] !== undefined && d[key] !== '' && !isNaN(Number(d[key])))
+            .map(d => ({
+              x: new Date(Number(d.ts) * 1000),
+              y: convert(Number(d[key]))
+            }));
+        }
 
-const weatherTemp = cleanWeatherData(apiData, 'temp_out', v => (v - 32) * 5 / 9);
-const weatherHum = cleanWeatherData(apiData, 'hum_out');
-const weatherRainfall = cleanWeatherData(apiData, 'rainfall_mm');
-const weatherSolar = cleanWeatherData(apiData, 'solar_rad_avg');
+        const weatherTemp = cleanWeatherData(apiData, 'temp_out', v => (v - 32) * 5 / 9);
+        const weatherHum = cleanWeatherData(apiData, 'hum_out');
+        const weatherRainfall = cleanWeatherData(apiData, 'rainfall_mm');
+        const weatherSolar = cleanWeatherData(apiData, 'solar_rad_avg');
 
-const recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
-const recentWeatherHum = weatherHum[weatherHum.length - 1000];
-const recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
-const recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
+        const recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
+        const recentWeatherHum = weatherHum[weatherHum.length - 1000];
+        const recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
+        const recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
 
 //--------------------build sapflow dataset--------------------
       // const headers = sapData.values[0];
@@ -481,11 +481,11 @@ const recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
-            { label: "Rainfall", data: weatherRainfall, color: "#0ea5e9" }
+            { label: "Rainfall", data: recentWeatherRainfall, color: "#0ea5e9" }
           ]);
 
           drawChart('weatherSolar', "Solar Radiation (watts per square meter)", [
-            { label: "Solar Radiation", data: weatherSolar, color: "#ffde21" }
+            { label: "Solar Radiation", data: recentWeatherSolar, color: "#ffde21" }
           ]);
 
           // drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
