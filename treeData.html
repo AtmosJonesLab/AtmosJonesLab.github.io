@@ -399,9 +399,12 @@
           if (!Array.isArray(apiData) || apiData.length === 0) {
             throw new Error("Weather data is empty or not in expected format");
           }
+          function isValidNumber(value) {
+            return value !== null && value !== undefined && value !== '' && !isNaN(Number(value));
+          }
 
           const weatherTemp = apiData
-            .filter(d => d.temp_out !== null && d.temp_out !== undefined && d.temp_out !== '' && !isNaN(d.temp_out))
+            .filter(d => isValidNumber(d.temp_out))
             .map(d => ({
               x: new Date(d.ts * 1000),
               y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
@@ -410,7 +413,7 @@
 
 
           const weatherHum = apiData
-            .filter(d => d.hum_out !== null && d.hum_out !== undefined && d.hum_out !== '' && !isNaN(d.hum_out))
+            .filter(d => isValidNumber(d.hum_out))
             .map(d => ({
               x: new Date(d.ts * 1000),
               y: d.hum_out
@@ -418,7 +421,7 @@
           recentWeatherHum = weatherHum[weatherHum.length - 1000];
 
           const weatherRainfall = apiData
-            .filter(d => d.rainfall_mm !== null && d.rainfall_mm !== undefined && d.rainfall_mm !== '' && !isNaN(d.rainfall_mm))
+            .filter(d => isValidNumber(d.rainfall_mm))
             .map(d => ({
               x: new Date(d.ts * 1000),
               y: d.rainfall_mm
@@ -426,7 +429,7 @@
           recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
 
           const weatherSolar = apiData
-            .filter(d => d.solar_rad_avg !== null && d.solar_rad_avg !== undefined && d.solar_rad_avg !== '' && !isNaN(d.solar_rad_avg))
+            .filter(d => isValidNumber(d.solar_rad_avg))
             .map(d => ({
               x: new Date(d.ts * 1000),
               y: d.solar_rad_avg
