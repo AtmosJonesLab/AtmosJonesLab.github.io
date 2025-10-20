@@ -523,38 +523,67 @@
       //--------------------draw charts--------------------
 
          
-          drawChart("combinedTempChart", "Temperature (°C)", [
-            { label: "Local Temperature", data: recentData["temperature"], color: "#f97316" },
-            { label: "Weather API Temperature", data: recentWeatherTemp, color: "#3b82f6" }
-          ], false);
+    
+          drawChart('combinedTempChart', 'Temperature (°C)', [
+            { label: 'Local Temperature', data: recentData["temperature"], color: "#f97316"},
+            { label: 'Weather Station Temperature', data: recentWeatherTemp, color: "#3b82f6"}
+          ], {
+            useGradient: true,
+            spanGaps: true,
+            fillArea: false
+          });
     
           drawChart("combinedHumChart", "Humidity (%)", [
             { label: "Local Humidity", data: recentData["humidity"], color: "#ef4444" },
-            { label: "Weather API Humidity", data: recentWeatherHum, color: "#0ea5e9" } 
-          ], false);
-    
+            { label: "Weather Station Humidity", data: recentWeatherHum, color: "#0ea5e9" }
+          ], {
+            useGradient: true,
+            spanGaps: true,
+            fillArea: false
+          });
+
           drawChart('pdendrochart', "Point Dendrometer (µm)", [
             { label: "Point Dendrometer", data: recentData["point dendrometer"], color: "#a855f7" }
-          ]);
+          ], {
+            useGradient: false,
+            spanGaps: true,
+            fillArea: false
+          });
 
           drawChart('LDchart', "LD", [
             { label: "LD", data: recentData["ld"], color: "#facc15" }
-          ]);
+          ], {
+            useGradient: false,
+            spanGaps: true,
+            fillArea: false
+          });
 
           drawChart('batteryChart', "Battery Voltage", [
             { label: "Battery Voltage", data: recentData["battery voltage"], color: "#22c55e" }
-          ]);
+          ], {
+            useGradient: false,
+            spanGaps: true,
+            fillArea: false
+          });
 
           const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
             { label: "Rainfall", data: recentWeatherRainfall, color: "#0ea5e9" }
-          ]);
+          ], {
+            useGradient: false,
+            spanGaps: true,
+            fillArea: false
+          });
 
           drawChart('weatherSolar', "Solar Radiation (watts per square meter)", [
             { label: "Solar Radiation", data: recentWeatherSolar, color: "#ffde21" }
-          ]);
+          ], {
+            useGradient: false,
+            spanGaps: true,
+            fillArea: false
+          });
 
           // drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
 
