@@ -202,126 +202,84 @@
     
 
     <script>
-     const drawChart = (
-  canvasId,
-  label,
-  datasets,
-  {
-    useGradient = false,
-    spanGaps = false,
-    fillArea = false
-  } = {}
-) => {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  
-  const ctx = canvas.getContext('2d');
-
-  // Format datasets for Chart.js
-  const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(
-    ({ label: dsLabel, data, color }) => {
-      let strokeStyle = color || '#3b82f6';
-
-      // Create gradient if requested
-      if (useGradient) {
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#ef4444'); // red
-        gradient.addColorStop(1, '#3b82f6'); // blue
-        strokeStyle = gradient;
+    const drawChart = (canvasId, label, datasets, { useGradient = false, spanGaps = true } = {}) => {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) {
+        console.warn(`⚠️ Canvas not found: ${canvasId}`);
+        return;
       }
 
-      return {
-        label: dsLabel || label,
-        data: data.map(d => ({
-          x: d.x,
-          y: (d.y !== null && !isNaN(d.y)) ? d.y : null // skip invalid data
-        })),
-        borderColor: strokeStyle,
-        backgroundColor: fillArea ? strokeStyle : 'transparent',
-        fill: fillArea,
-        spanGaps: spanGaps, // allow connecting across small null gaps
-        tension: 0.4,
-        borderWidth: 2,
-        pointRadius: 1.8,
-        pointHoverRadius: 4,
-        pointBackgroundColor: strokeStyle
-      };
-    }
-  );
+      const ctx = canvas.getContext('2d');
 
-  new Chart(ctx, {
-    type: 'line',
-    data: { datasets: formattedDatasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'nearest',
-        intersect: false
-      },
-      scales: {
-        x: {
-          type: 'time',
-          time: {
-            unit: 'minute',
-            displayFormats: { minute: 'MMM d, HH:mm' }
-          },
-          ticks: {
-            maxRotation: 45,
-            autoSkip: true,
-            font: { size: 10 }
-          },
-          grid: {
-            color: 'rgba(200,200,200,0.1)'
-          },
-          title: {
-            display: true,
-            text: 'Time',
-            font: { size: 14 }
-          }
-        },
-        y: {
-          beginAtZero: false,
-          grid: {
-            color: 'rgba(200,200,200,0.1)'
-          },
-          title: {
-            display: true,
-            text: label,
-            font: { size: 14 }
-          }
+      // Destroy existing chart if present
+      const existing = Chart.getChart(canvas);
+      if (existing) existing.destroy();
+
+      // Handle both single and multiple datasets
+      const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(({ label, data, color }) => {
+        let strokeStyle = color || '#3b82f6';
+
+        if (useGradient) {
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, '#ef4444');
+          gradient.addColorStop(1, '#3b82f6');
+          strokeStyle = gradient;
         }
-      },
-      plugins: {
-        title: {
-          display: true,
-          text: label,
-          font: { size: 18, weight: 'bold' },
-          padding: { top: 10, bottom: 10 }
-        },
-        legend: {
-          display: formattedDatasets.length > 1,
-          position: 'bottom',
-          labels: { font: { size: 12 } }
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-          callbacks: {
-            label: function(context) {
-              const value = context.parsed.y;
-              return value !== null ? `${context.dataset.label}: ${value.toFixed(2)}` : null;
+
+        return {
+          label,
+          data,
+          borderColor: strokeStyle,
+          backgroundColor: strokeStyle,
+          borderWidth: 2,
+          fill: false,
+          tension: 0.4,
+          pointRadius: 2,
+          pointBackgroundColor: strokeStyle,
+          spanGaps
+        };
+      });
+
+      // Safety check
+      if (!formattedDatasets.some(ds => ds.data?.length > 0)) {
+        console.warn(`⚠️ No valid data for chart: ${canvasId}`);
+        return;
+      }
+
+      // Draw chart
+      new Chart(ctx, {
+        type: 'line',
+        data: { datasets: formattedDatasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'minute',
+                displayFormats: { minute: 'MMM d, HH:mm' }
+              },
+              ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
+              title: { display: true, text: 'Time', font: { size: 14 } }
+            },
+            y: {
+              title: { display: true, text: label, font: { size: 14 } },
+              beginAtZero: false
             }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: label,
+              font: { size: 20, weight: 'bold' },
+              padding: { top: 10, bottom: 10 }
+            },
+            legend: { display: true, position: 'top' }
           }
         }
-      },
-      elements: {
-        line: { borderJoinStyle: 'round' },
-        point: { hoverRadius: 6 }
-      }
-    }
-  });
-};
+      });
+    };
 
     
       const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
@@ -523,67 +481,38 @@
       //--------------------draw charts--------------------
 
          
-    
-          drawChart('combinedTempChart', 'Temperature (°C)', [
-            { label: 'Local Temperature', data: recentData["temperature"], color: "#f97316"},
-            { label: 'Weather Station Temperature', data: recentWeatherTemp, color: "#3b82f6"}
-          ], {
-            useGradient: true,
-            spanGaps: true,
-            fillArea: false
-          });
-    
+          drawChart("combinedTempChart", "Temperature (°C)", [
+            { label: "Local Temperature", data: recentData["temperature"], color: "#f97316" },
+            { label: "Weather API Temperature", data: recentWeatherTemp, color: "#3b82f6" }
+          ], false);
+        
           drawChart("combinedHumChart", "Humidity (%)", [
             { label: "Local Humidity", data: recentData["humidity"], color: "#ef4444" },
             { label: "Weather Station Humidity", data: recentWeatherHum, color: "#0ea5e9" }
-          ], {
-            useGradient: true,
-            spanGaps: true,
-            fillArea: false
-          });
-
+          ], false);
+    
           drawChart('pdendrochart', "Point Dendrometer (µm)", [
             { label: "Point Dendrometer", data: recentData["point dendrometer"], color: "#a855f7" }
-          ], {
-            useGradient: false,
-            spanGaps: true,
-            fillArea: false
-          });
+          ]);
 
           drawChart('LDchart', "LD", [
             { label: "LD", data: recentData["ld"], color: "#facc15" }
-          ], {
-            useGradient: false,
-            spanGaps: true,
-            fillArea: false
-          });
+          ]);
 
           drawChart('batteryChart', "Battery Voltage", [
             { label: "Battery Voltage", data: recentData["battery voltage"], color: "#22c55e" }
-          ], {
-            useGradient: false,
-            spanGaps: true,
-            fillArea: false
-          });
+          ]);
 
           const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
           drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
             { label: "Rainfall", data: recentWeatherRainfall, color: "#0ea5e9" }
-          ], {
-            useGradient: false,
-            spanGaps: true,
-            fillArea: false
-          });
+          ]);
 
           drawChart('weatherSolar', "Solar Radiation (watts per square meter)", [
             { label: "Solar Radiation", data: recentWeatherSolar, color: "#ffde21" }
-          ], {
-            useGradient: false,
-            spanGaps: true,
-            fillArea: false
-          });
+          ]);
 
           // drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
 
