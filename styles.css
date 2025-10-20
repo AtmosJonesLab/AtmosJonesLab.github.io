@@ -429,6 +429,12 @@ th {
   flex: 0 0 25%; /* Show 4 images at once */
   padding: 0.5rem;
   box-sizing: border-box;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.carousel-slide:hover {
+  transform: scale(1.03);
 }
 
 .carousel-slide img {
@@ -438,6 +444,7 @@ th {
   border-radius: 8px;
 }
 
+/* Carousel navigation buttons */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -453,7 +460,7 @@ th {
 }
 
 .carousel-btn:hover {
-  background-color: var(--accent);
+  background-color: var(--accent, #3b82f6);
 }
 
 .carousel-btn.prev {
@@ -464,6 +471,7 @@ th {
   right: 10px;
 }
 
+/* Responsive breakpoints */
 @media (max-width: 1024px) {
   .carousel-slide {
     flex: 0 0 33.333%; /* 3 per view */
@@ -480,4 +488,43 @@ th {
   .carousel-slide {
     flex: 0 0 100%; /* 1 per view */
   }
+}
+
+/* ---------- Lightbox (Expanded Image) ---------- */
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  animation: fadeIn 0.3s ease;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  animation: zoomIn 0.3s ease;
+}
+
+/* Animations for smooth entry */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

@@ -362,45 +362,63 @@
             tableBody.prepend(tr);
           });
     //--------------------build api weather dataset--------------------
-          if (!Array.isArray(apiData) || apiData.length === 0) {
-            throw new Error("Weather data is empty or not in expected format");
-          }
-          function isValidNumber(value) {
-            return value !== null && value !== undefined && value !== '' && !isNaN(Number(value));
-          }
+          // if (!Array.isArray(apiData) || apiData.length === 0) {
+          //   throw new Error("Weather data is empty or not in expected format");
+          // }
+          // function isValidNumber(value) {
+          //   return value !== null && value !== undefined && value !== '' && !isNaN(Number(value));
+          // }
 
-          const weatherTemp = apiData
-            .filter(d => isValidNumber(d.temp_out))
-            .map(d => ({
-              x: new Date(d.ts * 1000),
-              y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
-            }));
-            recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
+          // const weatherTemp = apiData
+          //   .filter(d => isValidNumber(d.temp_out))
+          //   .map(d => ({
+          //     x: new Date(d.ts * 1000),
+          //     y: (d.temp_out - 32) * 5 / 9 // Convert from °F to °C
+          //   }));
+          //   recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
 
 
-          const weatherHum = apiData
-            .filter(d => isValidNumber(d.hum_out))
-            .map(d => ({
-              x: new Date(d.ts * 1000),
-              y: d.hum_out
-            }));
-          recentWeatherHum = weatherHum[weatherHum.length - 1000];
+          // const weatherHum = apiData
+          //   .filter(d => isValidNumber(d.hum_out))
+          //   .map(d => ({
+          //     x: new Date(d.ts * 1000),
+          //     y: d.hum_out
+          //   }));
+          // recentWeatherHum = weatherHum[weatherHum.length - 1000];
 
-          const weatherRainfall = apiData
-            .filter(d => isValidNumber(d.rainfall_mm))
-            .map(d => ({
-              x: new Date(d.ts * 1000),
-              y: d.rainfall_mm
-            }));
-          recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
+          // const weatherRainfall = apiData
+          //   .filter(d => isValidNumber(d.rainfall_mm))
+          //   .map(d => ({
+          //     x: new Date(d.ts * 1000),
+          //     y: d.rainfall_mm
+          //   }));
+          // recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
 
-          const weatherSolar = apiData
-            .filter(d => isValidNumber(d.solar_rad_avg))
-            .map(d => ({
-              x: new Date(d.ts * 1000),
-              y: d.solar_rad_avg
-            }));
-          recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
+          // const weatherSolar = apiData
+          //   .filter(d => isValidNumber(d.solar_rad_avg))
+          //   .map(d => ({
+          //     x: new Date(d.ts * 1000),
+          //     y: d.solar_rad_avg
+          //   }));
+          // recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
+
+          function cleanWeatherData(data, key, convert = null) {
+  return data
+    .filter(d => d && d[key] !== null && d[key] !== undefined && d[key] !== '' && !isNaN(Number(d[key])))
+    .map(d => ({
+      x: new Date(d.ts * 1000),
+      y: convert ? convert(d[key]) : Number(d[key])
+    }));
+}
+
+const weatherTemp = cleanWeatherData(apiData, 'temp_out', v => (v - 32) * 5 / 9);
+const weatherHum = cleanWeatherData(apiData, 'hum_out');
+const weatherRainfall = cleanWeatherData(apiData, 'rainfall_mm');
+const weatherSolar = cleanWeatherData(apiData, 'solar_rad_avg');
+const recentWeatherTemp = weatherTemp.slice(-1000);
+const recentWeatherHum = weatherHum.slice(-1000);
+const recentWeatherRainfall = weatherRainfall.slice(-1000);
+const recentWeatherSolar = weatherSolar.slice(-1000);
 
           
 //--------------------build sapflow dataset--------------------
@@ -505,8 +523,30 @@
   prevButton.addEventListener('click', () => { currentIndex--; updateCarousel(); });
   window.addEventListener('resize', updateCarousel);
   window.addEventListener('load', updateCarousel);
-</script>
+  
+  // Create lightbox element
+  const lightbox = document.createElement('div');
+  lightbox.classList.add('lightbox');
+  document.body.appendChild(lightbox);
 
+  const img = document.createElement('img');
+  lightbox.appendChild(img);
+
+  // Click on carousel image to open
+  document.querySelectorAll('.carousel-slide img').forEach(image => {
+    image.addEventListener('click', () => {
+      img.src = image.src;
+      lightbox.classList.add('active');
+    });
+  });
+
+  // Click anywhere to close
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+  });
+
+
+</script>
 
 </body>
 </html>
