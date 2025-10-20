@@ -202,75 +202,127 @@
     
 
     <script>
-      const drawChart = (canvasId, label, datasets, useGradient = false) => {
-        const canvas = document.getElementById(canvasId);
-        const ctx = canvas.getContext('2d');
-    
-        const formattedDatasets = Array.isArray(datasets) ? datasets.map(({ label, data, color }) => {
-          let strokeStyle = color;
-          if (useGradient) {
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#ef4444');
-            gradient.addColorStop(1, '#3b82f6');
-            strokeStyle = gradient;
-          }
-    
-          return {
-            label,
-            data,
-            borderColor: strokeStyle,
-            backgroundColor: strokeStyle,
-            fill: false,
-            tension: 0.4,
-            pointRadius: 2,
-            pointBackgroundColor: strokeStyle
-          };
-        }) : [{
-          label,
-          data: datasets,
-          borderColor: datasets.color || '#3b82f6',
-          backgroundColor: datasets.color || '#3b82f6',
-          fill: false,
-          tension: 0.4,
-          pointRadius: 2,
-          pointBackgroundColor: datasets.color || '#3b82f6'
-        }];
-    
-        new Chart(ctx, {
-          type: 'line',
-          data: { datasets: formattedDatasets },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: 'minute',
-              displayFormats: { minute: 'MMM d, HH:mm' }
-            },
-            ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
-            title: { display: true, text: 'Time', font: { size: 16 } }
-          },
-          y: {
-            type: 'linear',
-            position: 'left',
-            title: { display: true, text: label }
-          },
-        },
+     const drawChart = (
+  canvasId,
+  label,
+  datasets,
+  {
+    useGradient = false,
+    spanGaps = false,
+    fillArea = false
+  } = {}
+) => {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
 
-            plugins: {
-              title: {
-                display: true,
-                text: label,
-                font: { size: 30, weight: 'bold' },
-                padding: { top: 10, bottom: 10 }
-              },
-              legend: { display: true }
+  // Format datasets for Chart.js
+  const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(
+    ({ label: dsLabel, data, color }) => {
+      let strokeStyle = color || '#3b82f6';
+
+      // Create gradient if requested
+      if (useGradient) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#ef4444'); // red
+        gradient.addColorStop(1, '#3b82f6'); // blue
+        strokeStyle = gradient;
+      }
+
+      return {
+        label: dsLabel || label,
+        data: data.map(d => ({
+          x: d.x,
+          y: (d.y !== null && !isNaN(d.y)) ? d.y : null // skip invalid data
+        })),
+        borderColor: strokeStyle,
+        backgroundColor: fillArea ? strokeStyle : 'transparent',
+        fill: fillArea,
+        spanGaps: spanGaps, // allow connecting across small null gaps
+        tension: 0.4,
+        borderWidth: 2,
+        pointRadius: 1.8,
+        pointHoverRadius: 4,
+        pointBackgroundColor: strokeStyle
+      };
+    }
+  );
+
+  new Chart(ctx, {
+    type: 'line',
+    data: { datasets: formattedDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'nearest',
+        intersect: false
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'minute',
+            displayFormats: { minute: 'MMM d, HH:mm' }
+          },
+          ticks: {
+            maxRotation: 45,
+            autoSkip: true,
+            font: { size: 10 }
+          },
+          grid: {
+            color: 'rgba(200,200,200,0.1)'
+          },
+          title: {
+            display: true,
+            text: 'Time',
+            font: { size: 14 }
+          }
+        },
+        y: {
+          beginAtZero: false,
+          grid: {
+            color: 'rgba(200,200,200,0.1)'
+          },
+          title: {
+            display: true,
+            text: label,
+            font: { size: 14 }
+          }
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: label,
+          font: { size: 18, weight: 'bold' },
+          padding: { top: 10, bottom: 10 }
+        },
+        legend: {
+          display: formattedDatasets.length > 1,
+          position: 'bottom',
+          labels: { font: { size: 12 } }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y;
+              return value !== null ? `${context.dataset.label}: ${value.toFixed(2)}` : null;
             }
           }
-        });
-      };
+        }
+      },
+      elements: {
+        line: { borderJoinStyle: 'round' },
+        point: { hoverRadius: 6 }
+      }
+    }
+  });
+};
+
     
       const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
         if (maxVoltage < latestVoltage) {
@@ -477,8 +529,8 @@
           ], false);
     
           drawChart("combinedHumChart", "Humidity (%)", [
-            { label: "Local Humidity", data: recentData["humidity"], color: "#0ea5e9" },
-            { label: "Weather API Humidity", data: recentWeatherHum, color: "#ef4444" }
+            { label: "Local Humidity", data: recentData["humidity"], color: "#ef4444" },
+            { label: "Weather API Humidity", data: recentWeatherHum, color: "#0ea5e9" } 
           ], false);
     
           drawChart('pdendrochart', "Point Dendrometer (µm)", [
