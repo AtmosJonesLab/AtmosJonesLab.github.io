@@ -61,9 +61,7 @@
       });
     </script>
 
-   
-
-    <section class="carousel-section">
+<section class="carousel-section"> 
   <div class="carousel">
     <button class="carousel-btn prev">‹</button>
 
@@ -81,248 +79,206 @@
   </div>
 </section>
 
-<section id="weather-section">
+<section id="harbin-section">
   <h2 class="section-title">Data from Harbin Sugar Maple</h2>
-  
 
-  
+  <!-- Temperature + Humidity -->
   <div class="graph-grid">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id="combinedTempChart" ></canvas>
+      <canvas id="combinedTempChart"></canvas>
     </div>
+
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id="combinedHumChart" ></canvas>
+      <canvas id="combinedHumChart"></canvas>
     </div>
   </div>
 
+  <!-- Dendrometer + LD -->
   <div class="graph-grid">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id='pdendrochart' ></canvas>
+      <canvas id="pdendrochart"></canvas>
     </div>
+
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id='LDchart'></canvas>
+      <canvas id="LDchart"></canvas>
     </div>
   </div>
 
-
- <!-- PLACEHOLDER FOR SAPFLOW CHART -->
-  <!-- <div class="graph-grid">
+  <!-- Battery charts -->
+  <div class="graph-grid battery-charts-row">
     <div class="chart-wrapper" onclick="toggleExpand(this)">
       <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-      <canvas id='sapflowchart' ></canvas>
+      <canvas id="batteryChart"></canvas>
     </div>
-  </div> -->
 
-  <div class="graph-grid">
-    
-    <div class="battery-charts-row">
-      <div class="chart-wrapper" onclick="toggleExpand(this)">
-        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-        <canvas id="batteryChart"></canvas>
-      </div>
-      <div class="battery-percent-wrapper">
-        <canvas id="batteryPercent" width="200" height="200"></canvas>
-      </div>
+    <div class="battery-percent-wrapper">
+      <canvas id="batteryPercent" width="200" height="200"></canvas>
     </div>
   </div>
 </section>
-     
 
-  <script>
-    function toggleExpand(wrapper) {
-      // Close any other expanded chart
-      document.querySelectorAll('.chart-wrapper.expanded').forEach(el => {
-        if (el !== wrapper) el.classList.remove('expanded');
-      });
-      // Toggle this one
-      wrapper.classList.toggle('expanded');
-    }
-  
-    // Optional: click outside to close
-    document.addEventListener('click', function(e) {
-      const expanded = document.querySelector('.chart-wrapper.expanded');
-      if (expanded && !expanded.contains(e.target)) {
-        expanded.classList.remove('expanded');
-      }
+<script>
+  // Expand/Collapse Chart Functionality
+  function toggleExpand(wrapper) {
+    document.querySelectorAll('.chart-wrapper.expanded').forEach(el => {
+      if (el !== wrapper) el.classList.remove('expanded');
     });
-    
-  </script>
+    wrapper.classList.toggle('expanded');
+  }
 
+  // Close expanded charts when clicking outside
+  document.addEventListener('click', e => {
+    const expanded = document.querySelector('.chart-wrapper.expanded');
+    if (expanded && !expanded.contains(e.target)) expanded.classList.remove('expanded');
+  });
+</script>
 
+<!-- Weather Station Section -->
+<section id="hhg-section">
+  <h2 class="section-title">Hoya Harvest Weather Station</h2>
 
-  <section id="weather-section">
-    <h2 class="section-title">Hoya Harvest Weather Station</h2>
-
-
-    <div class="graph-grid">
-      <div class="chart-wrapper" onclick="toggleExpand(this)">
-        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-        <canvas id="weatherRainfall"></canvas>
-      </div>
-      <div class="chart-wrapper" onclick="toggleExpand(this)">
-        <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
-        <canvas id="weatherSolar"></canvas>
-      </div>
+  <div class="graph-grid">
+    <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
+      <canvas id="weatherRainfall"></canvas>
     </div>
 
-  
-   
-    <p class="footer" id="weatherFooter"></p>
-  </section>
+    <div class="chart-wrapper" onclick="toggleExpand(this)">
+      <button class="close-btn" onclick="event.stopPropagation(); this.parentElement.classList.remove('expanded')">✕</button>
+      <canvas id="weatherSolar"></canvas>
+    </div>
+  </div>
 
-  
-  
+  <p class="footer" id="weatherFooter"></p>
+</section>
 
-  
-  
-  <h2 class="section-title">Raw Sensor Readings</h2>
- 
-    
-    <a href="https://atmosjoneslab.github.io/prettydata.json" download="prettydata.json">
-      <button>Download Data</button>
-    </a>
-    <table border="1" id="sensor-table">
-      <thead>
-        <tr>
-          <th>Timestamp</th>
-          <th>Temperature</th>
-          <th>Humidity</th>
-          <th>Point Dendrometer</th>
-          <th>LD</th>
-          <th>Battery State</th>
-          <th>Battery Voltage</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    
+<!-- Data Table Section -->
+<h2 class="section-title">Raw Sensor Readings</h2>
 
-    <script>
-    const drawChart = (canvasId, label, datasets, { useGradient = false, spanGaps = true } = {}) => {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) {
-        console.warn(`⚠️ Canvas not found: ${canvasId}`);
-        return;
+<a href="https://atmosjoneslab.github.io/prettydata.json" download="prettydata.json">
+  <button>Download Data</button>
+</a>
+
+<table border="1" id="sensor-table">
+  <thead>
+    <tr>
+      <th>Timestamp</th>
+      <th>Temperature</th>
+      <th>Humidity</th>
+      <th>Point Dendrometer</th>
+      <th>LD</th>
+      <th>Battery State</th>
+      <th>Battery Voltage</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- ================== Chart + Data Script ================== -->
+<script>
+  const drawChart = (canvasId, label, datasets, { useGradient = false, spanGaps = true } = {}) => {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return console.warn(`Canvas not found: ${canvasId}`);
+
+    const ctx = canvas.getContext('2d');
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+
+    const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(({ label, data, color }) => {
+      let strokeStyle = color || '#3b82f6';
+      if (useGradient) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#ef4444');
+        gradient.addColorStop(1, '#3b82f6');
+        strokeStyle = gradient;
       }
-
-      const ctx = canvas.getContext('2d');
-
-      // Destroy existing chart if present
-      const existing = Chart.getChart(canvas);
-      if (existing) existing.destroy();
-
-      // Handle both single and multiple datasets
-      const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(({ label, data, color }) => {
-        let strokeStyle = color || '#3b82f6';
-
-        if (useGradient) {
-          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-          gradient.addColorStop(0, '#ef4444');
-          gradient.addColorStop(1, '#3b82f6');
-          strokeStyle = gradient;
-        }
-
-        return {
-          label,
-          data,
-          borderColor: strokeStyle,
-          backgroundColor: strokeStyle,
-          borderWidth: 2,
-          fill: false,
-          tension: 0.4,
-          pointRadius: 2,
-          pointBackgroundColor: strokeStyle,
-          spanGaps
-        };
-      });
-
-      // Safety check
-      if (!formattedDatasets.some(ds => ds.data?.length > 0)) {
-        console.warn(`⚠️ No valid data for chart: ${canvasId}`);
-        return;
-      }
-
-      // Draw chart
-      new Chart(ctx, {
-        type: 'line',
-        data: { datasets: formattedDatasets },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              type: 'time',
-              time: {
-                unit: 'minute',
-                displayFormats: { minute: 'MMM d, HH:mm' }
-              },
-              ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
-              title: { display: true, text: 'Time', font: { size: 14 } }
-            },
-            y: {
-              title: { display: true, text: label, font: { size: 14 } },
-              beginAtZero: false
-            }
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: label,
-              font: { size: 20, weight: 'bold' },
-              padding: { top: 10, bottom: 10 }
-            },
-            legend: { display: true, position: 'top' }
-          }
-        }
-      });
-    };
-
-    
-      const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
-        if (maxVoltage < latestVoltage) {
-          maxVoltage = latestVoltage;
-        }
-        const canvas = document.getElementById(canvasId);
-        const ctx = canvas.getContext('2d');
-        const percent = Math.min(latestVoltage / maxVoltage, 1);
-        const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
-    
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Battery', 'Remaining'],
-            datasets: [{
-              data: [percent * 100, 100 - percent * 100],
-              backgroundColor: [color, '#e5e7eb'],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: function (context) {
-                    return context.label + ": " + context.raw.toFixed(1) + "%";
-                  }
-                }
-              },
-              title: {
-                display: true,
-                text: "Battery: " + latestVoltage.toFixed(2) + "V",
-                font: { size: 18 }
-              }
-            }
-          }
-        });
+      return {
+        label,
+        data,
+        borderColor: strokeStyle,
+        backgroundColor: strokeStyle,
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 2,
+        pointBackgroundColor: strokeStyle,
+        spanGaps
       };
+    });
+
+    if (!formattedDatasets.some(ds => ds.data?.length > 0)) {
+      console.warn(`No valid data for chart: ${canvasId}`);
+      return;
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: { datasets: formattedDatasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            type: 'time',
+            time: { unit: 'minute', displayFormats: { minute: 'MMM d, HH:mm' } },
+            ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
+            title: { display: true, text: 'Time', font: { size: 14 } }
+          },
+          y: {
+            title: { display: true, text: label, font: { size: 14 } },
+            beginAtZero: false
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: label,
+            font: { size: 20, weight: 'bold' },
+            padding: { top: 10, bottom: 10 }
+          },
+          legend: { display: true, position: 'top' }
+        }
+      }
+    });
+  };
+
+  const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const percent = Math.min(latestVoltage / maxVoltage, 1);
+    const color = percent > 0.75 ? '#22c55e' : percent > 0.5 ? '#facc15' : '#ef4444';
+
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Battery', 'Remaining'],
+        datasets: [{ data: [percent * 100, 100 - percent * 100], backgroundColor: [color, '#e5e7eb'], borderWidth: 0 }]
+      },
+      options: {
+        responsive: false,
+        cutout: '70%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: context => `${context.label}: ${context.raw.toFixed(1)}%`
+            }
+          },
+          title: {
+            display: true,
+            text: `Battery: ${latestVoltage.toFixed(2)}V`,
+            font: { size: 18 }
+          }
+        }
+      }
+    });
+  };
+
     
       // Load both local JSON and Google Sheets JSON
        Promise.all([
@@ -523,42 +479,30 @@
     </script>
 
 
-<!-- ----------------Carousel Section ---------------- -->
+<!-- ================== Carousel Script ================== -->
 <script>
   const track = document.querySelector('.carousel-track');
   const slides = Array.from(track.children);
   const nextButton = document.querySelector('.carousel-btn.next');
   const prevButton = document.querySelector('.carousel-btn.prev');
-
   let currentIndex = 0;
 
-  function getSlidesPerView() {
-    if (window.innerWidth <= 480) return 1;
-    if (window.innerWidth <= 768) return 2;
-    if (window.innerWidth <= 1024) return 3;
-    return 4;
-  }
+  const getSlidesPerView = () => (
+    window.innerWidth <= 480 ? 1 :
+    window.innerWidth <= 768 ? 2 :
+    window.innerWidth <= 1024 ? 3 : 4
+  );
 
-  function updateCarousel() {
+  const updateCarousel = () => {
     const slideWidth = slides[0].getBoundingClientRect().width;
     const slidesPerView = getSlidesPerView();
-    const totalSlides = slides.length;
-    const maxIndex = Math.ceil(totalSlides / slidesPerView) - 1;
-
+    const maxIndex = Math.ceil(slides.length / slidesPerView) - 1;
     currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
     track.style.transform = `translateX(-${slideWidth * slidesPerView * currentIndex}px)`;
-  }
+  };
 
-  nextButton.addEventListener('click', () => {
-    currentIndex++;
-    updateCarousel();
-  });
-
-  prevButton.addEventListener('click', () => {
-    currentIndex--;
-    updateCarousel();
-  });
-
+  nextButton.addEventListener('click', () => { currentIndex++; updateCarousel(); });
+  prevButton.addEventListener('click', () => { currentIndex--; updateCarousel(); });
   window.addEventListener('resize', updateCarousel);
   window.addEventListener('load', updateCarousel);
 </script>
