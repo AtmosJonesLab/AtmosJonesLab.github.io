@@ -180,23 +180,31 @@
 
 <!-- ================== Chart + Data Script ================== -->
 <script>
-      // Global plugin: show message if no valid data
     Chart.register({
-      id: 'noDataPlugin',
-      afterDraw(chart) {
-        if (!chart.data.datasets.length || chart.data.datasets.every(ds => !ds.data || ds.data.length === 0)) {
-          const { ctx, chartArea } = chart;
-          const message = 'No valid data available';
-          ctx.save();
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#9ca3af'; // gray-400
-          ctx.font = '16px sans-serif';
-          ctx.fillText(message, (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2);
-          ctx.restore();
-        }
-      }
-    });
+  id: 'noDataPlugin',
+  afterDraw(chart) {
+    const datasets = chart.data.datasets || [];
+
+    // Check if ANY dataset has at least one valid numeric value (0 counts as valid)
+    const hasValidData = datasets.some(ds =>
+      Array.isArray(ds.data) &&
+      ds.data.some(point => point && point.y !== null && point.y !== undefined && !isNaN(point.y))
+    );
+
+    if (!hasValidData) {
+      const { ctx, chartArea } = chart;
+      const message = chart.config.options?.plugins?.noDataMessage || 'No valid data available';
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#9ca3af'; // Tailwind gray-400
+      ctx.font = '16px sans-serif';
+      ctx.fillText(message, (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2);
+      ctx.restore();
+    }
+  }
+});
+
 
   const drawChart = (canvasId, label, datasets, { useGradient = false, spanGaps = true } = {}) => {
     const canvas = document.getElementById(canvasId);
