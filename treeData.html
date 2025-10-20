@@ -415,12 +415,12 @@ const weatherTemp = cleanWeatherData(apiData, 'temp_out', v => (v - 32) * 5 / 9)
 const weatherHum = cleanWeatherData(apiData, 'hum_out');
 const weatherRainfall = cleanWeatherData(apiData, 'rainfall_mm');
 const weatherSolar = cleanWeatherData(apiData, 'solar_rad_avg');
-const recentWeatherTemp = weatherTemp.slice(-1000);
-const recentWeatherHum = weatherHum.slice(-1000);
-const recentWeatherRainfall = weatherRainfall.slice(-1000);
-const recentWeatherSolar = weatherSolar.slice(-1000);
 
-          
+const recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
+const recentWeatherHum = weatherHum[weatherHum.length - 1000];
+const recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
+const recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
+
 //--------------------build sapflow dataset--------------------
       // const headers = sapData.values[0];
       // const dataRows = sapData.values.slice(1);
