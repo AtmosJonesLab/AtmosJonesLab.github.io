@@ -410,7 +410,7 @@ function getAutoScaleBounds(data, lowerPercentile = 1, upperPercentile = 99) {
             tableBody.prepend(tr);
           });
     //--------------------build api weather dataset--------------------
-        
+          
 
          function cleanWeatherData(data, key, convert = v => v) {
           return data
@@ -421,16 +421,15 @@ function getAutoScaleBounds(data, lowerPercentile = 1, upperPercentile = 99) {
             }));
         }
 
+        const weatherTemp = cleanWeatherData(apiData, 'temp_out', v => (v - 32) * 5 / 9);
+        const weatherHum = cleanWeatherData(apiData, 'hum_out');
+        const weatherRainfall = cleanWeatherData(apiData, 'rainfall_mm');
+        const weatherSolar = cleanWeatherData(apiData, 'solar_rad_avg');
+
         const recentWeatherTemp = weatherTemp[weatherTemp.length - 1000];
         const recentWeatherHum = weatherHum[weatherHum.length - 1000];
         const recentWeatherRainfall = weatherRainfall[weatherRainfall.length - 1000];
         const recentWeatherSolar = weatherSolar[weatherSolar.length - 1000];
-
-        recentWeatherTemp = cleanWeatherData(apiData, 'temp_out', v => (v - 32) * 5 / 9);
-        recentWeatherHum = cleanWeatherData(apiData, 'hum_out');
-        recentWeatherRainfall = cleanWeatherData(apiData, 'rainfall_mm');
-        recentWeatherSolar = cleanWeatherData(apiData, 'solar_rad_avg');
-
 
 //--------------------build sapflow dataset--------------------
       // const headers = sapData.values[0];
