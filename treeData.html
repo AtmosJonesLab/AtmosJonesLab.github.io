@@ -206,67 +206,126 @@
 });
 
 
-  const drawChart = (canvasId, label, datasets, { useGradient = false, spanGaps = true } = {}) => {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return console.warn(`Canvas not found: ${canvasId}`);
+  // const drawChart = (canvasId, label, datasets, { useGradient = false, spanGaps = true } = {}) => {
+  //   const canvas = document.getElementById(canvasId);
+  //   if (!canvas) return console.warn(`Canvas not found: ${canvasId}`);
 
-    const ctx = canvas.getContext('2d');
-    const existing = Chart.getChart(canvas);
-    if (existing) existing.destroy();
+  //   const ctx = canvas.getContext('2d');
+  //   const existing = Chart.getChart(canvas);
+  //   if (existing) existing.destroy();
 
-    const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(({ label, data, color }) => {
-      let strokeStyle = color || '#3b82f6';
-      if (useGradient) {
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#ef4444');
-        gradient.addColorStop(1, '#3b82f6');
-        strokeStyle = gradient;
-      }
-      return {
+  //   const formattedDatasets = (Array.isArray(datasets) ? datasets : [datasets]).map(({ label, data, color }) => {
+  //     let strokeStyle = color || '#3b82f6';
+  //     if (useGradient) {
+  //       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  //       gradient.addColorStop(0, '#ef4444');
+  //       gradient.addColorStop(1, '#3b82f6');
+  //       strokeStyle = gradient;
+  //     }
+  //     return {
+  //       label,
+  //       data,
+  //       borderColor: strokeStyle,
+  //       backgroundColor: strokeStyle,
+  //       borderWidth: 2,
+  //       fill: false,
+  //       tension: 0.4,
+  //       pointRadius: 2,
+  //       pointBackgroundColor: strokeStyle,
+  //       spanGaps
+  //     };
+  //   });
+
+   
+  //   new Chart(ctx, {
+  //     type: 'line',
+  //     data: { datasets: formattedDatasets },
+  //     options: {
+  //       responsive: true,
+  //       maintainAspectRatio: false,
+  //       scales: {
+  //         x: {
+  //           type: 'time',
+  //           time: { unit: 'minute', displayFormats: { minute: 'MMM d, HH:mm' } },
+  //           ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
+  //           title: { display: true, text: 'Time', font: { size: 14 } }
+  //         },
+  //         y: {
+  //           title: { display: true, text: label, font: { size: 14 } },
+  //           beginAtZero: false
+  //         }
+  //       },
+  //       plugins: {
+  //         title: {
+  //           display: true,
+  //           text: label,
+  //           font: { size: 20, weight: 'bold' },
+  //           padding: { top: 10, bottom: 10 }
+  //         },
+  //         legend: { display: true, position: 'top' }
+  //       }
+  //     }
+  //   });
+  // };
+  const drawChart = (canvasId, label, data, color, useGradient = false, yMin = null, yMax = null) => {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+
+  let strokeStyle = color;
+  if (useGradient) {
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#ef4444');
+    gradient.addColorStop(1, '#3b82f6');
+    strokeStyle = gradient;
+  }
+
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      datasets: [{
         label,
         data,
         borderColor: strokeStyle,
         backgroundColor: strokeStyle,
-        borderWidth: 2,
         fill: false,
         tension: 0.4,
-        pointRadius: 2,
-        pointBackgroundColor: strokeStyle,
-        spanGaps
-      };
-    });
-
-   
-    new Chart(ctx, {
-      type: 'line',
-      data: { datasets: formattedDatasets },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            type: 'time',
-            time: { unit: 'minute', displayFormats: { minute: 'MMM d, HH:mm' } },
-            ticks: { maxRotation: 45, autoSkip: true, font: { size: 8 } },
-            title: { display: true, text: 'Time', font: { size: 14 } }
+        pointRadius: 4,
+        pointBackgroundColor: strokeStyle
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'day',
+            displayFormats: { day: 'MMM d, HH:mm' }
           },
-          y: {
-            title: { display: true, text: label, font: { size: 14 } },
-            beginAtZero: false
-          }
+          ticks: { maxRotation: 0, autoSkip: true, font: { size: 12 } },
+          title: { display: true, text: 'Time', font: { size: 16 } }
         },
-        plugins: {
-          title: {
-            display: true,
-            text: label,
-            font: { size: 20, weight: 'bold' },
-            padding: { top: 10, bottom: 10 }
-          },
-          legend: { display: true, position: 'top' }
+        y: {
+          min: yMin,
+          max: yMax,
+          beginAtZero: false,
+          title: { display: true, text: label }
         }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: label,
+          font: { size: 30, weight: 'bold' },
+          padding: { top: 10, bottom: 10 }
+        },
+        legend: { display: false }
       }
-    });
-  };
+    }
+  });
+};
+
 
   const drawBatteryChart = (canvasId, latestVoltage, maxVoltage = 4.5) => {
     const canvas = document.getElementById(canvasId);
@@ -476,32 +535,37 @@
 
 
       //--------------------draw charts--------------------
+          drawChart('temperatureChart', "Temperature (ºC)", sensorData["temperature"], "#f97316", true, -10, 50);
+          drawChart('humidityChart', "Humidity (%)", sensorData["humidity"], "#0ea5e9", true, 0, 100);
+          drawChart('pdendrochart', "Point Dendrometer (µm)", sensorData["point dendrometer"], "#a855f7", false, 0, 2000);
+          drawChart('LDchart', "LD", sensorData["ld"], "#facc15", false, 0, 200);
+          drawChart('batteryChart', "Battery Voltage", sensorData["battery voltage"], "#22c55e", false, 3, 4.5);
 
          
-          drawChart("combinedTempChart", "Temperature (°C)", [
-            { label: "Tree Temperature", data: recentData["temperature"], color: "#f97316" },
-            { label: "Weather Station Temperature", data: recentWeatherTemp, color: "#3b82f6" }
-          ], false);
+          // drawChart("combinedTempChart", "Temperature (°C)", [
+          //   { label: "Tree Temperature", data: recentData["temperature"], color: "#f97316" },
+          //   { label: "Weather Station Temperature", data: recentWeatherTemp, color: "#3b82f6" }
+          // ], false);
         
-          drawChart("combinedHumChart", "Humidity (%)", [
-            { label: "Tree Humidity", data: recentData["humidity"], color: "#ef4444" },
-            { label: "Weather Station Humidity", data: recentWeatherHum, color: "#0ea5e9" }
-          ], false);
+          // drawChart("combinedHumChart", "Humidity (%)", [
+          //   { label: "Tree Humidity", data: recentData["humidity"], color: "#ef4444" },
+          //   { label: "Weather Station Humidity", data: recentWeatherHum, color: "#0ea5e9" }
+          // ], false);
     
-          drawChart('pdendrochart', "Point Dendrometer (µm)", [
-            { label: "Point Dendrometer", data: recentData["point dendrometer"], color: "#a855f7" }
-          ]);
+          // drawChart('pdendrochart', "Point Dendrometer (µm)", [
+          //   { label: "Point Dendrometer", data: recentData["point dendrometer"], color: "#a855f7" }
+          // ]);
 
-          drawChart('LDchart', "LD", [
-            { label: "LD", data: recentData["ld"], color: "#facc15" }
-          ]);
+          // drawChart('LDchart', "LD", [
+          //   { label: "LD", data: recentData["ld"], color: "#facc15" }
+          // ]);
 
-          drawChart('batteryChart', "Battery Voltage", [
-            { label: "Battery Voltage", data: recentData["battery voltage"], color: "#22c55e" }
-          ]);
+          // drawChart('batteryChart', "Battery Voltage", [
+          //   { label: "Battery Voltage", data: recentData["battery voltage"], color: "#22c55e" }
+          // ]);
 
-          const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
-          drawBatteryChart('batteryPercent', latestBatteryVoltage);
+          // const latestBatteryVoltage = parseFloat(sensorData["battery voltage"].slice(-1)[0]?.y || 0);
+          // drawBatteryChart('batteryPercent', latestBatteryVoltage);
 
           drawChart('weatherRainfall', "Rainfall (mm)", [
             { label: "Rainfall", data: recentWeatherRainfall, color: "#0ea5e9" }
@@ -510,6 +574,7 @@
           drawChart('weatherSolar', "Solar Radiation (watts per square meter)", [
             { label: "Solar Radiation", data: recentWeatherSolar, color: "#ffde21" }
           ]);
+         
 
           // drawChart("sapflowchart", "Sap Flow (cm/hr)", datasets, false);
 
