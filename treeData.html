@@ -333,6 +333,7 @@
               sensorData[key].push({ x: time, y: value }); // keep as string
             } else {
               const numericValue = parseFloat(value);
+              if (isNaN(numericValue) || numericValue > 10000 || numericValue < -100) return;
               if (!isNaN(numericValue)) {
                 sensorData[key].push({ x: time, y: numericValue });
               }
