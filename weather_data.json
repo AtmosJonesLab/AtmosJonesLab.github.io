@@ -46422,5 +46422,173 @@
     "hum_out": 61,
     "rainfall_mm": 0,
     "solar_rad_avg": 16
+  },
+  {
+    "ts": 1777982400,
+    "temp_out": 63,
+    "hum_out": 56,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 110
+  },
+  {
+    "ts": 1777986000,
+    "temp_out": 66.4,
+    "hum_out": 50,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 399
+  },
+  {
+    "ts": 1777989600,
+    "temp_out": 70.3,
+    "hum_out": 46,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 574
+  },
+  {
+    "ts": 1777993200,
+    "temp_out": 73.6,
+    "hum_out": 45,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 721
+  },
+  {
+    "ts": 1777996800,
+    "temp_out": 76.5,
+    "hum_out": 41,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 845
+  },
+  {
+    "ts": 1778000400,
+    "temp_out": 79.3,
+    "hum_out": 39,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 905
+  },
+  {
+    "ts": 1778004000,
+    "temp_out": 81.5,
+    "hum_out": 33,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 897
+  },
+  {
+    "ts": 1778007600,
+    "temp_out": 82.4,
+    "hum_out": 30,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 836
+  },
+  {
+    "ts": 1778011200,
+    "temp_out": 83.4,
+    "hum_out": 29,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 716
+  },
+  {
+    "ts": 1778014800,
+    "temp_out": 83.7,
+    "hum_out": 26,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 456
+  },
+  {
+    "ts": 1778018400,
+    "temp_out": 83.2,
+    "hum_out": 26,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 261
+  },
+  {
+    "ts": 1778022000,
+    "temp_out": 82.3,
+    "hum_out": 28,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 119
+  },
+  {
+    "ts": 1778025600,
+    "temp_out": 81,
+    "hum_out": 30,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 45
+  },
+  {
+    "ts": 1778029200,
+    "temp_out": 79,
+    "hum_out": 35,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778032800,
+    "temp_out": 77,
+    "hum_out": 41,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778036400,
+    "temp_out": 75.3,
+    "hum_out": 45,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778040000,
+    "temp_out": 74,
+    "hum_out": 49,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778043600,
+    "temp_out": 73.4,
+    "hum_out": 52,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778047200,
+    "temp_out": 72.8,
+    "hum_out": 54,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778050800,
+    "temp_out": 71.3,
+    "hum_out": 59,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778054400,
+    "temp_out": 69.6,
+    "hum_out": 63,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778058000,
+    "temp_out": 68.3,
+    "hum_out": 66,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778061600,
+    "temp_out": 66.9,
+    "hum_out": 69,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 0
+  },
+  {
+    "ts": 1778065200,
+    "temp_out": 66.2,
+    "hum_out": 70,
+    "rainfall_mm": 0,
+    "solar_rad_avg": 20
   }
 ]
