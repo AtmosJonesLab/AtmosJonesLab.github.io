@@ -1,4 +1,5 @@
-name: Update Sap Google Sheet Data Daily
+name: Update Sapflow Google Sheet Data Daily
+# info from GSheet onto website
 
 on:
   # push:
@@ -33,9 +34,9 @@ jobs:
           import fetch from 'node-fetch';
           import fs from 'fs';
 
-          const API_KEY = 'AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA';
-          const SHEET_ID = '1gxxpepYDBFPydDFCylXE5EUx8XjXJB992g6NmMUaG0U';
-          const RANGE = 'sapflow!A1:J';
+          const API_KEY = 'AIzaSyDpB6qgW-L1KUPVHIuN0KSjBsMV1za1J0M';
+          const SHEET_ID = '1OHvUzHKfyJ9mXn1quFLOMcbknNUwR9RGPwUJbz_bSLY';
+          const RANGE = 'nicedata!A1:D';
 
           const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
@@ -102,8 +103,9 @@ jobs:
           # Run the script
           node fetch-data.mjs
         env:
-          API_KEY: AIzaSyBWq6_OOSDWjRS5j5Oco-TRAFtZRGMnwPA
-          SHEET_ID: 1gxxpepYDBFPydDFCylXE5EUx8XjXJB992g6NmMUaG0U
+          API_KEY: AIzaSyDpB6qgW-L1KUPVHIuN0KSjBsMV1za1J0M 
+          SHEET_ID: 1OHvUzHKfyJ9mXn1quFLOMcbknNUwR9RGPwUJbz_bSLY
+          # updated api and sheet id by ang
           
       - name: Commit and push changes
         env:
