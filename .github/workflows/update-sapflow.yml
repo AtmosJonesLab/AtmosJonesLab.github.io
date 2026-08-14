@@ -103,7 +103,7 @@ jobs:
           # Run the script
           node fetch-data.mjs
         env:
-          API_KEY: AIzaSyDpB6qgW-L1KUPVHIuN0KSjBsMV1za1J0M 
+          API_KEY: AIzaSyDpB6qgW-L1KUPVHIuN0KSjBsMV1za1J0M
           SHEET_ID: 1OHvUzHKfyJ9mXn1quFLOMcbknNUwR9RGPwUJbz_bSLY
           # updated api and sheet id by ang
           
