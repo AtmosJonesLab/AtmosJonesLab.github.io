@@ -43,58 +43,72 @@ jobs:
           const run = async () => {
           try {
             const res = await fetch(url.replace(' ', '%20'));
-            if (!res.ok) {
-              const errorDetails = await res.text();
-              throw new Error(`HTTP ${res.status}: ${errorDetails}`);
-            }
-            const json = await res.json();
-            const rows = json.values;
-
-            const headers = rows[0];
-
-            const sapData = {};
-            headers.forEach(header => {
-              sapData[header] = [];
-            });
-
-            const timeColIdx = 0;
-
-            const isValidDate = ts => {
-            const d = new Date(ts);
-              // filter out unparsable dates (NaN) and any before 1970
-            return !isNaN(d) && d.getFullYear() >= 1970;
-          };
-          for (let i = 1; i < rows.length; i++) {
-            const row = rows[i];
-            const rawTime = row[timeColIdx];
-
-            if (!isValidDate(rawTime)) {
-              // skip this entire row
-              console.warn(`Skipping row ${i} with invalid date: ${rawTime}`);
-              continue;
-            }
-
-
-            headers.forEach((header, idx) => {
-              sapData[header].push(row[idx] != null ? row[idx] : null);
-            });
-          }
-
-            // Sort all arrays by time
-            for (const key in sapData) {
-              
-              sapData[key].sort((a, b) => a.x - b.x);
-            }
-
-            fs.writeFileSync('sapData.json', JSON.stringify(json, null, 2));
-            console.log('✅ Successfully updated sapData.json');
-          } catch (err) {
-            console.log(err);
-            console.error(`❌ Failed to fetch data from ${url}:`, err.message);
-            if (err.response) {
-              console.error('Response details:', err.response.data);
+              if (!res.ok) {
+                const errorDetails = await res.text();
+                throw new Error(`HTTP ${res.status}: ${errorDetails}`);
               }
-            process.exit(1);
+              const json = await res.json();
+              const rows = json.values; // rows[0] = ["Parameter","Epoch","Formatted Time","Value"]
+
+              if (!rows || rows.length < 2) {
+                console.warn('No data rows found in Google Sheet.');
+                return;
+              }
+
+              const isValidDate = epochSec => {
+                const d = new Date(Number(epochSec) * 1000);
+                return !isNaN(d) && d.getFullYear() >= 1970;
+              };
+
+              const newData = {};
+              for (let i = 1; i < rows.length; i++) {
+                const [param, epoch, formattedTime, value] = rows[i];
+                if (!param) continue;
+                if (!isValidDate(epoch)) {
+                  console.warn(`Skipping row ${i}, invalid date: ${epoch}`);
+                  continue;
+                }
+                if (!newData[param]) newData[param] = { x: [], y: [] };
+                newData[param].x.push(Number(epoch));
+                newData[param].y.push(value != null ? (isNaN(Number(value)) ? value : Number(value)) : null);
+              }
+
+              // Sort each series by time
+              for (const key in newData) {
+                const combined = newData[key].x.map((x, i) => ({ x, y: newData[key].y[i] }));
+                combined.sort((a, b) => a.x - b.x);
+                newData[key].x = combined.map(c => c.x);
+                newData[key].y = combined.map(c => c.y);
+              }
+
+              // Read what workflow 1 already wrote, so we don't clobber it
+              let existingData = {};
+              try {
+                existingData = JSON.parse(fs.readFileSync('prettySapData.json', 'utf8'));
+              } catch (err) {
+                console.warn('No existing prettySapData.json found — starting fresh.');
+              }
+
+              // For shared keys (battery state, battery voltage) APPEND rather than overwrite,
+              // so both sheets' battery readings end up in the same series.
+              const mergedData = { ...existingData };
+              for (const key in newData) {
+                if (mergedData[key]) {
+                  const combined = [...mergedData[key].x, ...newData[key].x]
+                    .map((x, i) => ({ x, y: [...mergedData[key].y, ...newData[key].y][i] }))
+                    .sort((a, b) => a.x - b.x);
+                  mergedData[key] = { x: combined.map(c => c.x), y: combined.map(c => c.y) };
+                } else {
+                  mergedData[key] = newData[key];
+                }
+              }
+
+              fs.writeFileSync('sapData.json', JSON.stringify(json, null, 2));
+              fs.writeFileSync('prettySapData.json', JSON.stringify(mergedData, null, 2));
+              console.log('✅ Successfully updated sapData.json and prettySapData.json');
+            } catch (err) {
+              console.error(`❌ Failed to fetch data from ${url}:`, err.message);
+              process.exit(1);
             }
           };
           run();
